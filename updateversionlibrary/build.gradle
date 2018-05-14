@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
-
+//添加申请生成插件
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 android {
     compileSdkVersion 27
 
@@ -23,12 +25,82 @@ android {
     }
 
 }
+def siteUrl = 'https://github.com/duoluo9/UpdateVersion' //项目在github主页地址
+def gitUrl = 'https://github.com/duoluo9/UpdateVersion.git'   //Git仓库的地址
 
+group = "com.github.duoluo9"//发布aar前缀根节点
+
+version = "1.0.0"//发布aar的库版本
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                name 'updateversion'//添加项目描述
+                url siteUrl
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'duoluo9'//设置自己ID
+                        name 'duoluo9'//设置自己名字
+                        email '763263368@qq.com'//设置自己邮箱
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    options.encoding = "utf-8"
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(configurations.compile.files, android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        repo = "android"   //跟上面创建的Maven仓库名字保持一致
+        name = "updateversion" //项目在JCenter的名字
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

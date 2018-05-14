@@ -23,8 +23,7 @@ import java.io.File;
 /**
  * 下载任务进度监听
  *
- * @author swing
- * @date 2018/5/11
+ * @author swing 2018/5/11
  */
 public class DownloadCallback {
     private Context mContext;

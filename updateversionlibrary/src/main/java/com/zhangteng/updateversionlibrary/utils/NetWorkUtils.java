@@ -5,8 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 /**
- * @author swing
- * @date 14-5-8
+ * @author swing 14-5-8
  */
 public class NetWorkUtils {
 

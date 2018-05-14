@@ -1,9 +1,6 @@
 package com.zhangteng.updateversionlibrary;
 
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.zhangteng.updateversionlibrary.callback.VersionInfoCallback;
 import com.zhangteng.updateversionlibrary.http.HttpClient;

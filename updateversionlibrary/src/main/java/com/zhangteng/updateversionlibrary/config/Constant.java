@@ -5,8 +5,7 @@ import android.os.Environment;
 import java.util.HashMap;
 
 /**
- * @author swing
- * @date 2018/5/14
+ * @author swing 2018/5/14
  */
 public class Constant {
 

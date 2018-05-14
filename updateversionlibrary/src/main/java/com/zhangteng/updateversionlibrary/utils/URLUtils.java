@@ -1,8 +1,7 @@
 package com.zhangteng.updateversionlibrary.utils;
 
 /**
- * @author swing
- * @date 14-5-8
+ * @author swing 14-5-8
  */
 public class URLUtils {
 

@@ -22,8 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * @author swing
- * @date 2018/5/14
+ * @author swing 2018/5/14
  */
 public class VersionInfoCallback {
     private static Context mContext;
