@@ -1,0 +1,13 @@
+{
+  "status": 200,
+  "message": null,
+  "result": {
+    "id": "2c9081e85cc913b7015cc97e97b20001",
+    "name": "全优学学生",
+    "code": "QYX_STUDENT",
+    "appId": "2c9081e85cc94662015cc97b3be40001",
+    "versionNo": "2.2.4",
+    "versionCode": 28,
+    "url": "http://221.235.188.36:51022/download/software/android/quanyouxue_student_hg.apk"
+  }
+}

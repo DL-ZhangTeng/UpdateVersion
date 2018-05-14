@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- dialog -->
+    <dimen name="dialog_marge_top">23dp</dimen>
+    <dimen name="dialog_marge_bottom">24dp</dimen>
+    <dimen name="dialog_line_height">56dp</dimen>
+    <dimen name="dialog_cancel_font_size">16sp</dimen>
+    <dimen name="dialog_ok_font_size">16sp</dimen>
+    <dimen name="dialog_title_font_size">16sp</dimen>
+
+    <dimen name="dialog_title_heigh">45dp</dimen>
+    <dimen name="dialog_title_text_size">16sp</dimen>
+    <dimen name="dialog_update_rl_height">80dp</dimen>
+</resources>
