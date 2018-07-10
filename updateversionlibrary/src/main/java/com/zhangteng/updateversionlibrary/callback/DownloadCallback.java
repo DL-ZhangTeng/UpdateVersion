@@ -55,7 +55,7 @@ public class DownloadCallback {
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         //判断是否是AndroidN以及更高的版本
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
                             Uri uri = FileProvider.getUriForFile(mContext, mContext.getApplicationContext().getPackageName() + ".provider", apkFile);
                             intent.setDataAndType(uri, "application/vnd.android.package-archive");
                         } else {
@@ -174,7 +174,7 @@ public class DownloadCallback {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             //判断是否是AndroidN以及更高的版本
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
                 Uri uri = FileProvider.getUriForFile(mContext, mContext.getApplicationContext().getPackageName() + ".provider", apkFile);
                 intent.setDataAndType(uri, "application/vnd.android.package-archive");
             } else {
