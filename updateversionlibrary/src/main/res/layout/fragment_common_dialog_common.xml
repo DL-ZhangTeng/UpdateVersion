@@ -14,7 +14,7 @@
             android:layout_width="259dp"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
-            android:src="@mipmap/gengxin"
+            android:src="@mipmap/upload_version_gengxin"
             android:visibility="visible" />
 
         <ImageView
@@ -22,7 +22,7 @@
             android:layout_width="259dp"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
-            android:src="@mipmap/dialog_photo"
+            android:src="@mipmap/upload_version_nonet"
             android:visibility="gone" />
 
         <TextView

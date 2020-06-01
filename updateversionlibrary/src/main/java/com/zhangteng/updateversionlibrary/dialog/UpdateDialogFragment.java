@@ -44,7 +44,13 @@ public class UpdateDialogFragment extends DialogFragment implements OnClickListe
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mUpdateImageView = view.findViewById(R.id.dialog_iv1);
+        if (UpdateVersion.getUploadImage() != R.mipmap.upload_version_gengxin) {
+            mUpdateImageView.setImageResource(UpdateVersion.getUploadImage());
+        }
         mNoNetImageView = view.findViewById(R.id.dialog_iv2);
+        if (UpdateVersion.getNoNetImage() != R.mipmap.upload_version_nonet) {
+            mNoNetImageView.setImageResource(UpdateVersion.getNoNetImage());
+        }
         mCancel = view.findViewById(R.id.dialog_cancel);
         mCancel.setOnClickListener(this);
         mOk = view.findViewById(R.id.dialog_ok);

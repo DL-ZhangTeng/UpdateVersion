@@ -105,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
                 .isUpdateDownloadWithBrowser(false)
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .setThemeColor(R.color.colorPrimary)
+                .setNoNetImage(R.mipmap.upload_version_gengxin)
+                .setUploadImage(R.mipmap.upload_version_nonet)
                 .build()
                 //执行更新任务
                 .updateVersion(new CommonHttpClient(this, this.getSupportFragmentManager()));

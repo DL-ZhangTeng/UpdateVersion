@@ -1,6 +1,7 @@
 package com.zhangteng.updateversionlibrary;
 
 import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.util.Log;
 
 import com.zhangteng.updateversionlibrary.callback.VersionInfoCallback;
@@ -21,6 +22,10 @@ public class UpdateVersion extends VersionInfoCallback {
     private static String provider = BuildConfig.APPLICATION_ID + ".FileProvider";
     @ColorRes
     private static int themeColor = R.color.base_theme_color;
+    @DrawableRes
+    private static int uploadImage = R.mipmap.upload_version_gengxin;
+    @DrawableRes
+    private static int noNetImage = R.mipmap.upload_version_nonet;
     private Builder builder;
 
     public UpdateVersion(Builder builder) {
@@ -44,6 +49,8 @@ public class UpdateVersion extends VersionInfoCallback {
         isNotificationShow = builder.isNotificationShow;
         provider = builder.provider;
         themeColor = builder.themeColor;
+        uploadImage = builder.uploadImage;
+        noNetImage = builder.noNetImage;
     }
 
     public static boolean isAutoInstall() {
@@ -98,6 +105,14 @@ public class UpdateVersion extends VersionInfoCallback {
         return themeColor;
     }
 
+    public static int getUploadImage() {
+        return uploadImage;
+    }
+
+    public static int getNoNetImage() {
+        return noNetImage;
+    }
+
     public void updateVersion(HttpClient httpClient) {
         if (httpClient == null) {
             Log.e("UpdateVersion", "没有初始化网络请求客户端");
@@ -119,6 +134,10 @@ public class UpdateVersion extends VersionInfoCallback {
         private String provider = BuildConfig.APPLICATION_ID + ".FileProvider";
         @ColorRes
         private int themeColor = R.color.base_theme_color;
+        @DrawableRes
+        private int uploadImage = R.mipmap.upload_version_gengxin;
+        @DrawableRes
+        private int noNetImage = R.mipmap.upload_version_nonet;
 
         public Builder isAutoInstall(boolean autoInstall) {
             isAutoInstall = autoInstall;
@@ -167,6 +186,16 @@ public class UpdateVersion extends VersionInfoCallback {
 
         public Builder setThemeColor(@ColorRes int themeColor) {
             this.themeColor = themeColor;
+            return this;
+        }
+
+        public Builder setUploadImage(int uploadImage) {
+            this.uploadImage = uploadImage;
+            return this;
+        }
+
+        public Builder setNoNetImage(int noNetImage) {
+            this.noNetImage = noNetImage;
             return this;
         }
 
