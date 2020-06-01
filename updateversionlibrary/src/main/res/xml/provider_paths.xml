@@ -1,4 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths xmlns:android="http://schemas.android.com/apk/res/android">
-    <external-path name="external_files" path="."/>
+<paths>
+    <!--<root-path/> 代表设备的根目录new File("/");-->
+    <root-path
+        name="root"
+        path="." />
+    <!--<files-path/> 代表context.getFilesDir()-->
+    <files-path
+        name="files"
+        path="playschool" />
+    <!--<cache-path/> 代表context.getCacheDir()-->
+    <cache-path
+        name="cache"
+        path="updateVersion/cache" />
+    <!--<external-path/> 代表Environment.getExternalStorageDirectory()-->
+    <external-path
+        name="external"
+        path="updateVersion" />
+    <!--<external-files-path>代表context.getExternalFilesDirs()-->
+    <external-files-path
+        name="name"
+        path="updateVersion" />
+    <!--<external-cache-path>代表getExternalCacheDirs()-->
+    <external-cache-path
+        name="name"
+        path="updateVersion/cache" />
+    <!-- /storage/emulated/0/Download/${applicationId}/.beta/apk-->
+    <external-path
+        name="beta_external_path"
+        path="Download/" />
+    <!--/storage/emulated/0/Android/data/${applicationId}/files/apk/-->
+    <external-path
+        name="beta_external_files_path"
+        path="Android/data/" />
 </paths>

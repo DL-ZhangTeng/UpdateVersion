@@ -11,4 +11,5 @@
     <dimen name="dialog_title_heigh">45dp</dimen>
     <dimen name="dialog_title_text_size">16sp</dimen>
     <dimen name="dialog_update_rl_height">80dp</dimen>
+    <dimen name="dialog_radius">5dp</dimen>
 </resources>

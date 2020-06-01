@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zhangteng.updateversionlibrary.R;
+import com.zhangteng.updateversionlibrary.UpdateVersion;
 
 
 public class UpdateDialogFragment extends DialogFragment implements OnClickListener {
@@ -47,6 +48,9 @@ public class UpdateDialogFragment extends DialogFragment implements OnClickListe
         mCancel = view.findViewById(R.id.dialog_cancel);
         mCancel.setOnClickListener(this);
         mOk = view.findViewById(R.id.dialog_ok);
+        if (UpdateVersion.getThemeColor() != R.color.base_theme_color) {
+            mOk.setTextColor(getResources().getColor(UpdateVersion.getThemeColor()));
+        }
         mOk.setOnClickListener(this);
         mTitle = view.findViewById(R.id.dialog_title);
         mContentTitle = view.findViewById(R.id.dialog_content_title);

@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 .isUpdateDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
+                .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .build()
                 //执行更新任务
                 .updateVersion(new CommonHttpClient(this, this.getSupportFragmentManager()));
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 .isUpdateDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
+                .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .build()
                 //执行更新任务
                 .updateVersion(new CommonHttpClient(this, this.getSupportFragmentManager()));
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 .isUpdateDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
+                .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .build()
                 //执行更新任务
                 .updateVersion(new CommonHttpClient(this, this.getSupportFragmentManager()));
@@ -100,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
                 .isUpdateDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
+                .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
+                .setThemeColor(R.color.colorPrimary)
                 .build()
                 //执行更新任务
                 .updateVersion(new CommonHttpClient(this, this.getSupportFragmentManager()));
@@ -121,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
                 .isUpdateDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
+                .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
+                .setThemeColor(R.color.colorPrimary)
                 .build()
                 //执行更新任务
                 .updateVersion(new HttpClient() {

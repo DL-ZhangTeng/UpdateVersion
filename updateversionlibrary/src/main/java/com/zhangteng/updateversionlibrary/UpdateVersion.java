@@ -1,5 +1,6 @@
 package com.zhangteng.updateversionlibrary;
 
+import android.support.annotation.ColorRes;
 import android.util.Log;
 
 import com.zhangteng.updateversionlibrary.callback.VersionInfoCallback;
@@ -18,6 +19,8 @@ public class UpdateVersion extends VersionInfoCallback {
     private static boolean isNotificationShow = false;
     private static String checkUpdateCommonUrl = "";
     private static String provider = BuildConfig.APPLICATION_ID + ".FileProvider";
+    @ColorRes
+    private static int themeColor = R.color.base_theme_color;
     private Builder builder;
 
     public UpdateVersion(Builder builder) {
@@ -40,6 +43,7 @@ public class UpdateVersion extends VersionInfoCallback {
         checkUpdateCommonUrl = builder.checkUpdateCommonUrl;
         isNotificationShow = builder.isNotificationShow;
         provider = builder.provider;
+        themeColor = builder.themeColor;
     }
 
     public static boolean isAutoInstall() {
@@ -90,6 +94,10 @@ public class UpdateVersion extends VersionInfoCallback {
         return provider;
     }
 
+    public static int getThemeColor() {
+        return themeColor;
+    }
+
     public void updateVersion(HttpClient httpClient) {
         if (httpClient == null) {
             Log.e("UpdateVersion", "没有初始化网络请求客户端");
@@ -109,6 +117,8 @@ public class UpdateVersion extends VersionInfoCallback {
         private String checkUpdateCommonUrl = "";
         private UpdateVersion updateVersion;
         private String provider = BuildConfig.APPLICATION_ID + ".FileProvider";
+        @ColorRes
+        private int themeColor = R.color.base_theme_color;
 
         public Builder isAutoInstall(boolean autoInstall) {
             isAutoInstall = autoInstall;
@@ -152,6 +162,11 @@ public class UpdateVersion extends VersionInfoCallback {
 
         public Builder setProvider(String provider) {
             this.provider = provider;
+            return this;
+        }
+
+        public Builder setThemeColor(@ColorRes int themeColor) {
+            this.themeColor = themeColor;
             return this;
         }
 
