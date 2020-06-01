@@ -5,15 +5,10 @@ import android.util.Log;
 
 import com.zhangteng.updateversionlibrary.UpdateVersion;
 import com.zhangteng.updateversionlibrary.callback.VersionInfoCallback;
-import com.zhangteng.updateversionlibrary.config.Constant;
 import com.zhangteng.updateversionlibrary.entity.VersionEntity;
 import com.zhangteng.updateversionlibrary.utils.HttpRequest;
 import com.zhangteng.updateversionlibrary.utils.JSONHandler;
 import com.zhangteng.updateversionlibrary.utils.URLUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.SocketTimeoutException;
 
 /**
  * Created by swing on 2018/5/14.
@@ -28,7 +23,7 @@ public abstract class AsyncCheck extends AsyncTask<String, Integer, VersionEntit
     /**
      * 获取版本信息后执行
      *
-     * @param versionEntity
+     * @param versionEntity 版本信息
      */
     public abstract void doDoInBackground(VersionEntity versionEntity);
 
@@ -63,12 +58,8 @@ public abstract class AsyncCheck extends AsyncTask<String, Integer, VersionEntit
                     versionEntity = JSONHandler.toVersionEntity(HttpRequest.get(url));
                 }
             }
-        } catch (SocketTimeoutException e) {
-            e.printStackTrace();
-            return null;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
         doDoInBackground(versionEntity);
         return versionEntity;
@@ -79,5 +70,4 @@ public abstract class AsyncCheck extends AsyncTask<String, Integer, VersionEntit
         super.onPostExecute(versionEntity);
         doOnPostExecute();
     }
-
 }

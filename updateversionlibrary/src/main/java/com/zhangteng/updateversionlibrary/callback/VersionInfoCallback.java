@@ -1,9 +1,9 @@
 package com.zhangteng.updateversionlibrary.callback;
 
+import android.annotation.SuppressLint;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -12,22 +12,20 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.zhangteng.updateversionlibrary.UpdateVersion;
-import com.zhangteng.updateversionlibrary.config.Constant;
 import com.zhangteng.updateversionlibrary.dialog.UpdateDialogFragment;
 import com.zhangteng.updateversionlibrary.entity.VersionEntity;
 import com.zhangteng.updateversionlibrary.http.HttpClient;
 import com.zhangteng.updateversionlibrary.utils.NetWorkUtils;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
  * @author swing 2018/5/14
  */
 public class VersionInfoCallback {
+    @SuppressLint("StaticFieldLeak")
     private static Context mContext;
     private VersionEntity versionEntity;
-    private SharedPreferences preferences_update;
     private FragmentManager mFragmentManager;
     private HttpClient httpClient;
 
@@ -36,8 +34,6 @@ public class VersionInfoCallback {
      */
     public void onPreExecute(Context context, FragmentManager fragmentManager, HttpClient httpClient) {
         mContext = context;
-        preferences_update = mContext.getSharedPreferences("Updater",
-                Context.MODE_PRIVATE);
         this.mFragmentManager = fragmentManager;
         this.httpClient = httpClient;
     }
@@ -53,40 +49,38 @@ public class VersionInfoCallback {
      * 请求完成后进行下载请求
      */
     public void onPostExecute() {
-        SharedPreferences.Editor editor = preferences_update.edit();
         if (mContext != null && versionEntity != null) {
             Log.i("auto update", "versionEntity versioncode: " + versionEntity.getVersionNo() + " package versioncode: " + getPackageInfo().versionCode);
             if (versionEntity.getVersionCode() > getPackageInfo().versionCode) {
-                if (UpdateVersion.isUpdateDialogShow()) {
-                    showUpdateUICustom(versionEntity);
+                if (versionEntity.getForceUpdate() != 0) {
+                    UpdateVersion.setIsAutoInstall(true);
+                    UpdateVersion.setIsProgressDialogShow(true);
+                    NetWorkUtils netWorkUtils = new NetWorkUtils(mContext);
+                    int type = netWorkUtils.getNetType();
+                    if (type != 1) {
+                        showUpdateUICustom(versionEntity);
+                    } else {
+                        httpClient.downloadApk(versionEntity, new DownloadCallback());
+                    }
+                } else {
+                    if (UpdateVersion.isUpdateDialogShow()) {
+                        showUpdateUICustom(versionEntity);
+                    }
                 }
-                editor.putBoolean("hasNewVersion", true);
-                editor.putString("lastestVersionCode",
-                        "" + versionEntity.getVersionCode());
-                editor.putString("lastestVersionName",
-                        versionEntity.getVersionNo());
             } else {
                 if (UpdateVersion.isHintVersion()) {
                     Toast.makeText(mContext, "当前已是最新版", Toast.LENGTH_LONG).show();
                 }
-                editor.putBoolean("hasNewVersion", false);
             }
         } else {
             if (UpdateVersion.isHintVersion()) {
                 Toast.makeText(mContext, "当前已是最新版", Toast.LENGTH_LONG).show();
             }
         }
-        editor.putString("currentVersionCode", getPackageInfo().versionCode
-                + "");
-        editor.putString("currentVersionName", getPackageInfo().versionName);
-        editor.commit();
     }
 
     /**
      * 获取当前app版本
-     *
-     * @return
-     * @throws PackageManager.NameNotFoundException
      */
     private PackageInfo getPackageInfo() {
         PackageInfo pinfo = null;
@@ -107,58 +101,16 @@ public class VersionInfoCallback {
     private void showUpdateUICustom(final VersionEntity versionEntity) {
         final UpdateDialogFragment dialogFragment = new UpdateDialogFragment();
         dialogFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-        dialogFragment.setTitle("发现新版本，是否更新 ？");
-        dialogFragment.setNegativeBtn("下次再说", new UpdateDialogFragment.OnClickListener() {
-
-            @Override
-            public void onClick() {
-                dialogFragment.dismiss();
-            }
-        });
-        dialogFragment.setPositiveBtn("下载", new UpdateDialogFragment.OnClickListener() {
-
-            @Override
-            public void onClick() {
-                dialogFragment.dismiss();
-
-                NetWorkUtils netWorkUtils = new NetWorkUtils(mContext);
-                int type = netWorkUtils.getNetType();
-                if (type != 1) {
-                    showNetCustomDialog(versionEntity);
-                } else {
-                    if (!UpdateVersion.isUpdateDownloadWithBrowser()) {
-                        httpClient.downloadApk(versionEntity, new DownloadCallback());
-                    } else {
-                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(versionEntity.getUrl()));
-                        mContext.startActivity(i);
-                    }
-                }
-
-            }
-        });
-        dialogFragment.show(mFragmentManager, "");
-    }
-
-    /**
-     * 手机网络dialog
-     */
-    private void showNetCustomDialog(final VersionEntity versionEntity) {
-
-        final UpdateDialogFragment dialogFragment = new UpdateDialogFragment();
-        dialogFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-        dialogFragment.setTitle("您在目前的网络环境下继续下载将可能会消耗手机流量，请确认是否继续下载？");
-        dialogFragment.setNegativeBtn("取消下载", new UpdateDialogFragment.OnClickListener() {
-
-            @Override
-            public void onClick() {
-                dialogFragment.dismiss();
-            }
-        });
-        dialogFragment.setPositiveBtn("继续下载", new UpdateDialogFragment.OnClickListener() {
-
-            @Override
-            public void onClick() {
-                dialogFragment.dismiss();
+        dialogFragment.setTitle("发现新版本\n" + versionEntity.getVersionNo());
+        dialogFragment.setContentTitleText("更新的内容");
+        dialogFragment.setContentText(versionEntity.getUpdateDesc());
+        dialogFragment.setNegativeBtn("暂不", null);
+        dialogFragment.setPositiveBtn("立即更新", () -> {
+            NetWorkUtils netWorkUtils = new NetWorkUtils(mContext);
+            int type = netWorkUtils.getNetType();
+            if (type != 1) {
+                showNetCustomDialog(versionEntity);
+            } else {
                 if (!UpdateVersion.isUpdateDownloadWithBrowser()) {
                     httpClient.downloadApk(versionEntity, new DownloadCallback());
                 } else {
@@ -167,24 +119,44 @@ public class VersionInfoCallback {
                 }
             }
         });
-        dialogFragment.show(mFragmentManager, "");
+        try {
+            dialogFragment.show(mFragmentManager, "");
+        } catch (IllegalStateException e) {
+            Log.e("UpdateDialogFragment", e.getMessage());
+        }
+    }
+
+    /**
+     * 手机网络dialog
+     */
+    private void showNetCustomDialog(final VersionEntity versionEntity) {
+        final UpdateDialogFragment dialogFragment = new UpdateDialogFragment();
+        dialogFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+        dialogFragment.setContentText("小主，当前在无WIFI的情况下下载，请确定是否使用流量继续下载。");
+        dialogFragment.setNetHint(true);
+        dialogFragment.setNegativeBtn("取消", null);
+        dialogFragment.setPositiveBtn("继续下载", () -> {
+            if (!UpdateVersion.isUpdateDownloadWithBrowser()) {
+                httpClient.downloadApk(versionEntity, new DownloadCallback());
+            } else {
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(versionEntity.getUrl()));
+                mContext.startActivity(i);
+            }
+        });
+        try {
+            dialogFragment.show(mFragmentManager, "");
+        } catch (IllegalStateException e) {
+            Log.e("UpdateDialogFragment", e.getMessage());
+        }
     }
 
     public static InputStream nativeAssertGet(String URL) {
         InputStream inputStream = null;
         try {
             inputStream = mContext.getAssets().open(URL);
-
         } catch (Exception e) {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
+            e.printStackTrace();
         }
-
         return inputStream;
     }
 }

@@ -12,11 +12,11 @@ import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.zhangteng.updateversionlibrary.UpdateVersion;
 import com.zhangteng.updateversionlibrary.config.Constant;
 import com.zhangteng.updateversionlibrary.dialog.CommonProgressDialog;
-import com.zhangteng.updateversionlibrary.entity.VersionEntity;
 
 import java.io.File;
 
@@ -85,11 +85,13 @@ public class DownloadCallback {
      */
     public void onPreExecute(Context context) {
         this.mContext = context;
-        progressDialog = new CommonProgressDialog(context);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("正在下载更新");
-        if (!UpdateVersion.isNotificationShow()) {
-            progressDialog.show();
+        if (UpdateVersion.isProgressDialogShow()) {
+            progressDialog = new CommonProgressDialog(context);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage("正在下载更新");
+            if (!UpdateVersion.isNotificationShow()) {
+                progressDialog.show();
+            }
         }
     }
 
@@ -102,9 +104,12 @@ public class DownloadCallback {
             if (!UpdateVersion.isNotificationShow()) {
                 handler.obtainMessage(COMPLETE_DOWNLOAD_APK).sendToTarget();
             }
-            progressDialog.dismiss();
         } else {
             Log.e("Error", "下载失败。");
+            Toast.makeText(mContext, "下载失败，请到应用商城或官网下载", Toast.LENGTH_LONG).show();
+        }
+        if (UpdateVersion.isProgressDialogShow()) {
+            progressDialog.dismiss();
         }
     }
 
@@ -120,8 +125,10 @@ public class DownloadCallback {
      * 下载进度监听
      */
     public void onProgressUpdate(Integer... values) {
-        progressDialog.setMax((int) total);
-        progressDialog.setProgress(values[0]);
+        if (UpdateVersion.isProgressDialogShow()) {
+            progressDialog.setMax((int) total);
+            progressDialog.setProgress(values[0]);
+        }
         if (UpdateVersion.isNotificationShow()) {
             handler.obtainMessage(UPDATE_NOTIFICATION_PROGRESS, values[0], (int) total).sendToTarget();
         }
@@ -135,8 +142,7 @@ public class DownloadCallback {
     private void showDownloadNotificationUI(final int progress, int total) {
         if (mContext != null) {
             int pro = progress * 100 / total;
-            String contentText = new StringBuffer().append(pro)
-                    .append("%").toString();
+            String contentText = pro + "%";
             PendingIntent contentIntent = PendingIntent.getActivity(mContext,
                     0, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
             if (notificationManager == null) {
@@ -167,7 +173,7 @@ public class DownloadCallback {
     /**
      * 安装apk
      *
-     * @param apkFile
+     * @param apkFile 安装包文件
      */
     private void installApk(File apkFile) {
         if (mContext != null) {

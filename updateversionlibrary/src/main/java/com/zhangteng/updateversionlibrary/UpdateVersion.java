@@ -9,9 +9,10 @@ import com.zhangteng.updateversionlibrary.http.HttpClient;
  * Created by swing on 2018/5/11.
  */
 public class UpdateVersion extends VersionInfoCallback {
-    private static boolean isAutoInstall = false;
-    private static boolean isUpdateDialogShow = false;
-    private static boolean isHintVersion = false;
+    private static boolean isAutoInstall = true;
+    private static boolean isUpdateDialogShow = true;
+    private static boolean isProgressDialogShow = true;
+    private static boolean isHintVersion = true;
     private static boolean isUpdateTest = false;
     private static boolean isUpdateDownloadWithBrowser = false;
     private static boolean isNotificationShow = false;
@@ -31,6 +32,7 @@ public class UpdateVersion extends VersionInfoCallback {
     private void initParams(Builder builder) {
         isAutoInstall = builder.isAutoInstall;
         isUpdateDialogShow = builder.isUpdateDialogShow;
+        isProgressDialogShow = builder.isProgressDialogShow;
         isHintVersion = builder.isHintVersion;
         isUpdateTest = builder.isUpdateTest;
         isUpdateDownloadWithBrowser = builder.isUpdateDownloadWithBrowser;
@@ -42,8 +44,20 @@ public class UpdateVersion extends VersionInfoCallback {
         return isAutoInstall;
     }
 
+    public static void setIsAutoInstall(boolean isAutoInstall) {
+        UpdateVersion.isAutoInstall = isAutoInstall;
+    }
+
+    public static void setIsProgressDialogShow(boolean isProgressDialogShow) {
+        UpdateVersion.isProgressDialogShow = isProgressDialogShow;
+    }
+
     public static boolean isUpdateDialogShow() {
         return isUpdateDialogShow;
+    }
+
+    public static boolean isProgressDialogShow() {
+        return isProgressDialogShow;
     }
 
     public static boolean isHintVersion() {
@@ -79,9 +93,10 @@ public class UpdateVersion extends VersionInfoCallback {
     }
 
     public static class Builder {
-        private boolean isAutoInstall = false;
-        private boolean isUpdateDialogShow = false;
-        private boolean isHintVersion = false;
+        private boolean isAutoInstall = true;
+        private boolean isUpdateDialogShow = true;
+        private boolean isProgressDialogShow = true;
+        private boolean isHintVersion = true;
         private boolean isUpdateTest = false;
         private boolean isUpdateDownloadWithBrowser = false;
         private boolean isNotificationShow = false;
@@ -95,6 +110,11 @@ public class UpdateVersion extends VersionInfoCallback {
 
         public Builder isUpdateDialogShow(boolean updateDialogShow) {
             isUpdateDialogShow = updateDialogShow;
+            return this;
+        }
+
+        public Builder isProgressDialogShow(boolean progressDialogShow) {
+            isProgressDialogShow = progressDialogShow;
             return this;
         }
 

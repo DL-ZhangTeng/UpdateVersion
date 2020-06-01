@@ -1,7 +1,6 @@
 package com.zhangteng.updateversionlibrary.utils;
 
 import com.zhangteng.updateversionlibrary.UpdateVersion;
-import com.zhangteng.updateversionlibrary.config.Constant;
 import com.zhangteng.updateversionlibrary.entity.VersionEntity;
 
 import org.json.JSONObject;
@@ -36,6 +35,8 @@ public class JSONHandler {
             versionEntity.setAppId(jsonObject.getString("appId"));
             versionEntity.setVersionNo(jsonObject.getString("versionNo"));
             versionEntity.setVersionCode(jsonObject.getInt("versionCode"));
+            versionEntity.setUpdateDesc(jsonObject.getString("updateDesc"));
+            versionEntity.setForceUpdate(jsonObject.getInt("forceUpdate"));
             return versionEntity;
         } else {
             return null;

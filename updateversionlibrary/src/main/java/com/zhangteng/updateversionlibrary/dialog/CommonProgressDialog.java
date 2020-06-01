@@ -26,7 +26,6 @@ public class CommonProgressDialog extends AlertDialog {
     private TextView mProgressNumber;
     private TextView mProgressPercent;
     private TextView mProgressMessage;
-    private Handler mViewUpdateHandler;
     private int mMax;
     private CharSequence mMessage;
     private boolean mHasStarted;
@@ -37,7 +36,6 @@ public class CommonProgressDialog extends AlertDialog {
 
     public CommonProgressDialog(Context context) {
         super(context);
-// TODO Auto-generated constructor stub
         initFormats();
     }
 
@@ -49,18 +47,15 @@ public class CommonProgressDialog extends AlertDialog {
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.common_progress_dialog);
         mProgress = (ProgressBar) findViewById(R.id.progress);
         mProgressNumber = (TextView) findViewById(R.id.progress_number);
         mProgressPercent = (TextView) findViewById(R.id.progress_percent);
         mProgressMessage = (TextView) findViewById(R.id.progress_message);
-        // LayoutInflater inflater = LayoutInflater.from(getContext());
-        mViewUpdateHandler = new Handler() {
+        Handler mViewUpdateHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                // TODO Auto-generated method stub
                 super.handleMessage(msg);
                 int progress = mProgress.getProgress();
                 int max = mProgress.getMax();
@@ -75,8 +70,9 @@ public class CommonProgressDialog extends AlertDialog {
                 if (mProgressPercentFormat != null) {
                     double percent = (double) progress / (double) max;
                     SpannableString tmp = new SpannableString(mProgressPercentFormat.format(percent));
-                    tmp.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
-                            0, tmp.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    if (0 < tmp.length())
+                        tmp.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
+                                0, tmp.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     mProgressPercent.setText(tmp);
                 } else {
                     mProgressPercent.setText("");
@@ -103,7 +99,27 @@ public class CommonProgressDialog extends AlertDialog {
     }
 
     private void onProgressChanged() {
-        mViewUpdateHandler.sendEmptyMessage(0);
+//        mViewUpdateHandler.sendEmptyMessage(0);
+        int progress = mProgress.getProgress();
+        int max = mProgress.getMax();
+        double dProgress = (double) progress / (double) (1024 * 1024);
+        double dMax = (double) max / (double) (1024 * 1024);
+        if (mProgressNumberFormat != null) {
+            String format = mProgressNumberFormat;
+            mProgressNumber.setText(String.format(format, dProgress, dMax));
+        } else {
+            mProgressNumber.setText("");
+        }
+        if (mProgressPercentFormat != null) {
+            double percent = (double) progress / (double) max;
+            SpannableString tmp = new SpannableString(mProgressPercentFormat.format(percent));
+            if (0 < tmp.length())
+                tmp.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
+                        0, tmp.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mProgressPercent.setText(tmp);
+        } else {
+            mProgressPercent.setText("");
+        }
     }
 
     public int getMax() {
@@ -122,15 +138,6 @@ public class CommonProgressDialog extends AlertDialog {
         }
     }
 
-    public void setIndeterminate(boolean indeterminate) {
-        if (mProgress != null) {
-            mProgress.setIndeterminate(indeterminate);
-        }
-// else {
-// mIndeterminate = indeterminate;
-// }
-    }
-
     public void setProgress(int value) {
         if (mHasStarted) {
             mProgress.setProgress(value);
@@ -142,7 +149,6 @@ public class CommonProgressDialog extends AlertDialog {
 
     @Override
     public void setMessage(CharSequence message) {
-        // TODO Auto-generated method stub
         if (mProgressMessage != null) {
             mProgressMessage.setText(message);
         } else {
@@ -152,14 +158,12 @@ public class CommonProgressDialog extends AlertDialog {
 
     @Override
     protected void onStart() {
-        // TODO Auto-generated method stub
         super.onStart();
         mHasStarted = true;
     }
 
     @Override
     protected void onStop() {
-// TODO Auto-generated method stub
         super.onStop();
         mHasStarted = false;
     }

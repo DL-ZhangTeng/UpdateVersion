@@ -11,6 +11,8 @@ public class VersionEntity {
     private String versionNo;
     private int versionCode;
     private String url;
+    private String updateDesc;
+    private int forceUpdate;
 
     public String getId() {
         return id;
@@ -58,5 +60,21 @@ public class VersionEntity {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getUpdateDesc() {
+        return updateDesc;
+    }
+
+    public void setUpdateDesc(String updateDesc) {
+        this.updateDesc = updateDesc;
+    }
+
+    public int getForceUpdate() {
+        return forceUpdate;
+    }
+
+    public void setForceUpdate(int forceUpdate) {
+        this.forceUpdate = forceUpdate;
     }
 }

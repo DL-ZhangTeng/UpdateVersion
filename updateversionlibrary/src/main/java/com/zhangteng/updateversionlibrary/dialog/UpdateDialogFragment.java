@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zhangteng.updateversionlibrary.R;
@@ -16,12 +17,18 @@ import com.zhangteng.updateversionlibrary.R;
 
 public class UpdateDialogFragment extends DialogFragment implements OnClickListener {
 
+    private ImageView mUpdateImageView, mNoNetImageView;
     private TextView mCancel;
     private TextView mOk;
     private TextView mTitle;
+    private TextView mContentTitle;
+    private TextView mContent;
     private String mTitleText;
+    private String mContentTitleText;
+    private String mContentText;
     private String mNegativeText;
     private String mPositiveText;
+    private boolean netHit = false;
     private OnClickListener mNegativeClickListener;
     private OnClickListener mPositiveClickListener;
 
@@ -35,13 +42,27 @@ public class UpdateDialogFragment extends DialogFragment implements OnClickListe
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mCancel = (TextView) view.findViewById(R.id.dialog_cancel);
+        mUpdateImageView = view.findViewById(R.id.dialog_iv1);
+        mNoNetImageView = view.findViewById(R.id.dialog_iv2);
+        mCancel = view.findViewById(R.id.dialog_cancel);
         mCancel.setOnClickListener(this);
-        mOk = (TextView) view.findViewById(R.id.dialog_ok);
+        mOk = view.findViewById(R.id.dialog_ok);
         mOk.setOnClickListener(this);
-        mTitle = (TextView) view.findViewById(R.id.dialog_title);
+        mTitle = view.findViewById(R.id.dialog_title);
+        mContentTitle = view.findViewById(R.id.dialog_content_title);
+        mContent = view.findViewById(R.id.dialog_content);
         if (mTitleText != null) {
             mTitle.setText(mTitleText);
+        }
+        if (mContentTitleText != null) {
+            mContentTitle.setText(mContentTitleText);
+        } else {
+            mContentTitle.setVisibility(View.GONE);
+        }
+        if (mContentText != null) {
+            mContent.setText(mContentText);
+        } else {
+            mContent.setVisibility(View.GONE);
         }
         if (mNegativeText != null) {
             mCancel.setText(mNegativeText);
@@ -49,10 +70,27 @@ public class UpdateDialogFragment extends DialogFragment implements OnClickListe
         if (mPositiveText != null) {
             mOk.setText(mPositiveText);
         }
+        if (netHit) {
+            mTitle.setVisibility(View.GONE);
+            mUpdateImageView.setVisibility(View.GONE);
+            mNoNetImageView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setTitle(String title) {
         mTitleText = title;
+    }
+
+    public void setNetHint(boolean netHint) {
+        this.netHit = netHint;
+    }
+
+    public void setContentTitleText(String mContentTitleText) {
+        this.mContentTitleText = mContentTitleText;
+    }
+
+    public void setContentText(String mContentText) {
+        this.mContentText = mContentText;
     }
 
     public void setNegativeBtnText(String text) {
@@ -77,14 +115,14 @@ public class UpdateDialogFragment extends DialogFragment implements OnClickListe
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.dialog_cancel) {
-            mNegativeClickListener.onClick();
+            if (mNegativeClickListener != null)
+                mNegativeClickListener.onClick();
 
         } else if (i == R.id.dialog_ok) {
-            mPositiveClickListener.onClick();
-
-        } else {
+            if (mPositiveClickListener != null)
+                mPositiveClickListener.onClick();
         }
-        this.dismiss();
+        this.dismissAllowingStateLoss();
     }
 
     public interface OnClickListener {

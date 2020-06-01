@@ -1,60 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/corner_border_submit_loading" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="259dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/corner_border_submit_loading"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="259dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/dialog_iv1"
+            android:layout_width="259dp"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@mipmap/gengxin"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/dialog_iv2"
+            android:layout_width="259dp"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@mipmap/dialog_photo"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="20dp"
+            android:gravity="start|top"
+            android:lineSpacingExtra="10dp"
+            android:text="发现新版本\n1.1.1"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp" />
+    </FrameLayout>
 
     <TextView
-        android:id="@+id/dialog_title"
+        android:id="@+id/dialog_content_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="18dp"
+        android:gravity="start|top"
+        android:text="更新的内容"
+        android:textColor="#333333"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/dialog_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="18dp"
+        android:gravity="start|top"
         android:lineSpacingExtra="10dp"
-        android:paddingBottom="@dimen/dialog_marge_bottom"
-        android:paddingTop="@dimen/dialog_marge_top"
-        android:text="common dialog"
-        android:textColor="#313131"
-        android:textSize="@dimen/dialog_title_font_size" />
+        android:text="1.客户端体验优化\n2.UI界面优化升级"
+        android:textColor="#666666"
+        android:textSize="12sp" />
 
     <View
-        android:id="@+id/dialog_line"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/dialog_title"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="18dp"
         android:background="#e6e6e6" />
 
-    <RelativeLayout
-        android:layout_below="@id/dialog_line"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-         >
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/dialog_cancel"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dialog_line_height"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="取消"
+            android:textColor="#999999"
+            android:textSize="@dimen/dialog_cancel_font_size" />
 
         <View
-            android:id="@+id/dialog_mid_line"
-            android:layout_width="1dp"
+            android:layout_width="0.5dp"
             android:layout_height="@dimen/dialog_line_height"
             android:layout_centerInParent="true"
             android:background="#e6e6e6" />
 
         <TextView
-            android:id="@+id/dialog_cancel"
-            android:textColor="@color/app_green_color"
-            android:textSize="@dimen/dialog_cancel_font_size"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dialog_line_height"
-            android:layout_toLeftOf="@id/dialog_mid_line"
-            android:gravity="center"
-            android:text="取消" />
-
-        <TextView
             android:id="@+id/dialog_ok"
-            android:textColor="@color/app_green_color"
-            android:textSize="@dimen/dialog_ok_font_size"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="@dimen/dialog_line_height"
-            android:layout_toRightOf="@id/dialog_mid_line"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="确定" />
-    </RelativeLayout>
+            android:text="确定"
+            android:textColor="@color/base_theme_color"
+            android:textSize="@dimen/dialog_ok_font_size" />
+    </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

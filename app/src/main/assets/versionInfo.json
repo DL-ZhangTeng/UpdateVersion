@@ -1,13 +1,12 @@
 {
-  "status": 200,
-  "message": null,
   "result": {
-    "id": "2c9081e85cc913b7015cc97e97b20001",
-    "name": "全优学学生",
-    "code": "QYX_STUDENT",
-    "appId": "2c9081e85cc94662015cc97b3be40001",
-    "versionNo": "2.2.4",
-    "versionCode": 28,
-    "url": "http://221.235.188.36:51022/download/software/android/quanyouxue_student_hg.apk"
+    "appId": "0001",
+    "id": "2",
+    "name": "应用名",
+    "url": "http://img.zhiyaolai.com/%E5%90%8C%E5%AD%A6%E5%BA%93_2-1.0.2-2019-08-21.apk",
+    "versionCode": 2,
+    "versionNo": "1.0.2",
+    "forceUpdate": 0,
+    "updateDesc": "1.客户端体验优化\n2.UI界面优化升级"
   }
 }

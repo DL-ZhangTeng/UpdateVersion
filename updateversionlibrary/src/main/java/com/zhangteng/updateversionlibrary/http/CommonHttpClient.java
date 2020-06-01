@@ -2,8 +2,6 @@ package com.zhangteng.updateversionlibrary.http;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 
 import com.zhangteng.updateversionlibrary.asynctask.AsyncCheck;
