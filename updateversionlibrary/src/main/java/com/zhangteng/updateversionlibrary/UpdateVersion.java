@@ -1,7 +1,7 @@
 package com.zhangteng.updateversionlibrary;
 
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
 import android.util.Log;
 
 import com.zhangteng.updateversionlibrary.callback.VersionInfoCallback;
@@ -19,7 +19,7 @@ public class UpdateVersion extends VersionInfoCallback {
     private static boolean isUpdateDownloadWithBrowser = false;
     private static boolean isNotificationShow = false;
     private static String checkUpdateCommonUrl = "";
-    private static String provider = BuildConfig.APPLICATION_ID + ".FileProvider";
+    private static String provider = BuildConfig.LIBRARY_PACKAGE_NAME + ".FileProvider";
     @ColorRes
     private static int themeColor = R.color.base_theme_color;
     @DrawableRes
@@ -131,7 +131,7 @@ public class UpdateVersion extends VersionInfoCallback {
         private boolean isNotificationShow = false;
         private String checkUpdateCommonUrl = "";
         private UpdateVersion updateVersion;
-        private String provider = BuildConfig.APPLICATION_ID + ".FileProvider";
+        private String provider = BuildConfig.LIBRARY_PACKAGE_NAME + ".FileProvider";
         @ColorRes
         private int themeColor = R.color.base_theme_color;
         @DrawableRes
