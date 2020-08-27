@@ -3,7 +3,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.3"
 
     defaultConfig {
         minSdkVersion 21
@@ -29,7 +29,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
 }
 
 //上传命令：1、gradlew javadocJar 2、gradlew sourcesJar 3、gradlew install 4、gradlew bintrayUpload
@@ -42,7 +42,7 @@ def artifactName = 'UpdateVersion'//项目名
 def description = '版本更新'//添加项目描述
 
 group = "com.zhangteng.updateversion"//发布aar前缀根节点
-version = "1.1.0"//发布aar的库版本
+version = "1.1.1"//发布aar的库版本
 
 install {
     repositories.mavenInstaller {
