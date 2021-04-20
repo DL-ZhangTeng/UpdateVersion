@@ -2,34 +2,15 @@
 UpdateVersion是一个Android版本更新库。
 [GitHub仓库地址](https://github.com/duoluo9/UpdateVersion)
 ## 引入
-### maven
-```xml
-<dependency>
-	<groupId>com.zhangteng.updateversion</groupId>
-	<artifactId>updateversionlibrary</artifactId>
-	<version>1.1.0</version>
-	<type>pom</type>
-</dependency>
-```
-
 ### gradle
 ```groovy
 allprojects {
     repositories {
-        maven { url 'https://dl.bintray.com/duoluo9/android' }
+        maven { url 'https://jitpack.io' }
     }
 }
 
-implementation 'com.zhangteng.updateversion:updateversionlibrary:1.1.0'
-```
-
-
-
-###  ivy
-```xml
-<dependency org="com.zhangteng.updateversion" name="updateversionlibrary" rev="1.1.0">
-	<artifact name="updateversionlibrary" ext="pom"></artifact>
-</dependency>
+implementation 'com.github.duoluo9:UpdateVersion:1.1.0'
 ```
 ## 效果图
 ![无wifi](https://img-blog.csdnimg.cn/20200807172122393.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2R1b2x1bzk=,size_16,color_FFFFFF,t_70)
