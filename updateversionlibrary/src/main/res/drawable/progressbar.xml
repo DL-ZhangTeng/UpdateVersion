@@ -21,7 +21,7 @@
         <clip>
             <shape>
                 <corners android:radius="5dip" />
-                <solid android:color="@color/base_theme_color" />
+                <solid android:color="@color/version_theme_color" />
             </shape>
         </clip>
     </item>

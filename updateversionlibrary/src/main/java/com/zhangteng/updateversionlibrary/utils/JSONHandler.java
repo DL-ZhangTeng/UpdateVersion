@@ -30,6 +30,7 @@ public class JSONHandler {
         versionEntity.setAppId(jsonObject.getString("appId"));
         versionEntity.setVersionNo(jsonObject.getString("versionNo"));
         versionEntity.setVersionCode(jsonObject.getInt("versionCode"));
+        versionEntity.setUpdateDesc(jsonObject.getString("title"));
         versionEntity.setUpdateDesc(jsonObject.getString("updateDesc"));
         versionEntity.setForceUpdate(jsonObject.getInt("forceUpdate"));
         return versionEntity;

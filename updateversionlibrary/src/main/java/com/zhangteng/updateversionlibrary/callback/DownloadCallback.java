@@ -9,11 +9,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.FileProvider;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.FileProvider;
+
+import com.zhangteng.updateversionlibrary.R;
 import com.zhangteng.updateversionlibrary.UpdateVersion;
 import com.zhangteng.updateversionlibrary.config.Constant;
 import com.zhangteng.updateversionlibrary.dialog.CommonProgressDialog;
@@ -51,7 +53,8 @@ public class DownloadCallback {
                         ntfBuilder = new NotificationCompat.Builder(mContext);
                         ntfBuilder.setSmallIcon(mContext.getApplicationInfo().icon)
                                 .setContentTitle(Constant.cache.get(Constant.APP_NAME))
-                                .setContentText("下载完成，点击安装").setTicker("任务下载完成");
+                                .setContentText(mContext == null ? "下载完成，点击安装" : mContext.getString(R.string.notification_content_finish))
+                                .setTicker(mContext == null ? "任务下载完成" : mContext.getString(R.string.notification_ticker_finish));
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         //判断是否是AndroidN以及更高的版本
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -88,7 +91,7 @@ public class DownloadCallback {
         if (UpdateVersion.isProgressDialogShow()) {
             progressDialog = new CommonProgressDialog(context);
             progressDialog.setCancelable(false);
-            progressDialog.setMessage("正在下载更新");
+            progressDialog.setMessage(mContext == null ? "正在下载更新" : mContext.getString(R.string.progress_message));
             if (!UpdateVersion.isNotificationShow()) {
                 progressDialog.show();
             }
@@ -106,7 +109,7 @@ public class DownloadCallback {
             }
         } else {
             Log.e("Error", "下载失败。");
-            Toast.makeText(mContext, "下载失败，请到应用商城或官网下载", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, mContext == null ? "下载失败，请到应用商城或官网下载" : mContext.getString(R.string.download_failure), Toast.LENGTH_LONG).show();
         }
         if (UpdateVersion.isProgressDialogShow()) {
             progressDialog.dismiss();
@@ -152,8 +155,8 @@ public class DownloadCallback {
             if (ntfBuilder == null) {
                 ntfBuilder = new NotificationCompat.Builder(mContext)
                         .setSmallIcon(mContext.getApplicationInfo().icon)
-                        .setTicker("开始下载...")
-                        .setContentTitle("更新")
+                        .setTicker(mContext == null ? "开始下载…" : mContext.getString(R.string.notification_ticker_start))
+                        .setContentTitle(mContext == null ? "更新" : mContext.getString(R.string.notification_ticker_start))
                         .setContentIntent(contentIntent);
             }
             ntfBuilder.setContentText(contentText);

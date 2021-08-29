@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import androidx.fragment.app.FragmentManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentManager;
+
+import com.zhangteng.updateversionlibrary.R;
 import com.zhangteng.updateversionlibrary.UpdateVersion;
 import com.zhangteng.updateversionlibrary.dialog.UpdateDialogFragment;
 import com.zhangteng.updateversionlibrary.entity.VersionEntity;
@@ -69,12 +72,12 @@ public class VersionInfoCallback {
                 }
             } else {
                 if (UpdateVersion.isHintVersion()) {
-                    Toast.makeText(mContext, "当前已是最新版", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, mContext == null ? "当前已是最新版" : mContext.getString(R.string.version_hint), Toast.LENGTH_LONG).show();
                 }
             }
         } else {
             if (UpdateVersion.isHintVersion()) {
-                Toast.makeText(mContext, "当前已是最新版", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, mContext == null ? "当前已是最新版" : mContext.getString(R.string.version_hint), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -98,14 +101,15 @@ public class VersionInfoCallback {
     /**
      * 更新提示
      */
+    @SuppressLint("WrongConstant")
     private void showUpdateUICustom(final VersionEntity versionEntity) {
         final UpdateDialogFragment dialogFragment = new UpdateDialogFragment();
         dialogFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-        dialogFragment.setTitle("发现新版本\n" + versionEntity.getVersionNo());
-        dialogFragment.setContentTitleText("更新的内容");
-        dialogFragment.setContentText(versionEntity.getUpdateDesc());
-        dialogFragment.setNegativeBtn("暂不", null);
-        dialogFragment.setPositiveBtn("立即更新", () -> {
+        dialogFragment.setTitle(mContext == null ? "发现新版本%s" : String.format(mContext.getString(R.string.version_title), "\n" + versionEntity.getVersionNo()));
+        dialogFragment.setContentTitleText(mContext == null ? "更新的内容" : TextUtils.isEmpty(versionEntity.getTitle()) ? mContext.getString(R.string.version_content_title) : versionEntity.getTitle());
+        dialogFragment.setContentText(mContext == null ? "%s" : String.format(mContext.getString(R.string.version_content), versionEntity.getUpdateDesc()));
+        dialogFragment.setNegativeBtn(mContext == null ? "暂不" : mContext.getString(R.string.version_cancel), null);
+        dialogFragment.setPositiveBtn(mContext == null ? "立即更新" : mContext.getString(R.string.version_confirm), () -> {
             NetWorkUtils netWorkUtils = new NetWorkUtils(mContext);
             int type = netWorkUtils.getNetType();
             if (type != 1) {
@@ -129,13 +133,14 @@ public class VersionInfoCallback {
     /**
      * 手机网络dialog
      */
+    @SuppressLint("WrongConstant")
     private void showNetCustomDialog(final VersionEntity versionEntity) {
         final UpdateDialogFragment dialogFragment = new UpdateDialogFragment();
         dialogFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-        dialogFragment.setContentText("小主，当前在无WIFI的情况下下载，请确定是否使用流量继续下载。");
+        dialogFragment.setContentText(mContext == null ? "当前在无WIFI的情况下下载，请确定是否使用流量继续下载。" : mContext.getString(R.string.no_wifi_hint));
         dialogFragment.setNetHint(true);
-        dialogFragment.setNegativeBtn("取消", null);
-        dialogFragment.setPositiveBtn("继续下载", () -> {
+        dialogFragment.setNegativeBtn(mContext == null ? "取消" : mContext.getString(R.string.no_wifi_hint_cancel), null);
+        dialogFragment.setPositiveBtn(mContext == null ? "继续下载" : mContext.getString(R.string.no_wifi_hint_confirm), () -> {
             if (!UpdateVersion.isUpdateDownloadWithBrowser()) {
                 httpClient.downloadApk(versionEntity, new DownloadCallback());
             } else {

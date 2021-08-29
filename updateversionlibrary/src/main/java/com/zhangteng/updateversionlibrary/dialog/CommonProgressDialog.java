@@ -53,13 +53,13 @@ public class CommonProgressDialog extends AlertDialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.common_progress_dialog);
         mProgress = findViewById(R.id.progress);
-        if (UpdateVersion.getThemeColor() != R.color.base_theme_color) {
+        if (UpdateVersion.getThemeColor() != R.color.version_theme_color) {
             mProgress.setProgressDrawable(getProgressLayerDrawable());
         }
         mProgressNumber = findViewById(R.id.progress_number);
         mProgressPercent = findViewById(R.id.progress_percent);
         mProgressMessage = findViewById(R.id.progress_message);
-        if (UpdateVersion.getThemeColor() != R.color.base_theme_color) {
+        if (UpdateVersion.getThemeColor() != R.color.version_theme_color) {
             mProgressMessage.setBackground(getTitleBackgroundDrawable());
         }
         onProgressChanged();

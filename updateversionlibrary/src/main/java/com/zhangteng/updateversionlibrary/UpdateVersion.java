@@ -21,7 +21,7 @@ public class UpdateVersion extends VersionInfoCallback {
     private static String checkUpdateCommonUrl = "";
     private static String provider = BuildConfig.LIBRARY_PACKAGE_NAME + ".FileProvider";
     @ColorRes
-    private static int themeColor = R.color.base_theme_color;
+    private static int themeColor = R.color.version_theme_color;
     @DrawableRes
     private static int uploadImage = R.mipmap.upload_version_gengxin;
     @DrawableRes
@@ -133,7 +133,7 @@ public class UpdateVersion extends VersionInfoCallback {
         private UpdateVersion updateVersion;
         private String provider = BuildConfig.LIBRARY_PACKAGE_NAME + ".FileProvider";
         @ColorRes
-        private int themeColor = R.color.base_theme_color;
+        private int themeColor = R.color.version_theme_color;
         @DrawableRes
         private int uploadImage = R.mipmap.upload_version_gengxin;
         @DrawableRes

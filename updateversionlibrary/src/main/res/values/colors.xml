@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="base_theme_color">#FE5722</color>
-    <color name="white">#ffffffff</color>
+    <color name="version_theme_color">#FE5722</color>
+    <color name="version_bg_color">#ffffffff</color>
+
+    <color name="progress_message_color">#ffffffff</color>
 </resources>

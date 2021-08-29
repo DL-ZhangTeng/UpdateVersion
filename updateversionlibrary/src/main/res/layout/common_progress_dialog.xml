@@ -9,8 +9,8 @@
         android:layout_height="@dimen/dialog_title_heigh"
         android:background="@drawable/dialog_title_background"
         android:gravity="center"
-        android:text="提示"
-        android:textColor="@color/white"
+        android:text="@string/progress_message"
+        android:textColor="@color/progress_message_color"
         android:textSize="@dimen/dialog_title_text_size" />
 
     <RelativeLayout

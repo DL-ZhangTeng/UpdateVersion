@@ -54,7 +54,7 @@ public class UpdateDialogFragment extends DialogFragment implements OnClickListe
         mCancel = view.findViewById(R.id.dialog_cancel);
         mCancel.setOnClickListener(this);
         mOk = view.findViewById(R.id.dialog_ok);
-        if (UpdateVersion.getThemeColor() != R.color.base_theme_color) {
+        if (UpdateVersion.getThemeColor() != R.color.version_theme_color) {
             mOk.setTextColor(getResources().getColor(UpdateVersion.getThemeColor()));
         }
         mOk.setOnClickListener(this);
