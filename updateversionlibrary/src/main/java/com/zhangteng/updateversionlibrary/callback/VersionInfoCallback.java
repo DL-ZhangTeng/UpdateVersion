@@ -105,9 +105,9 @@ public class VersionInfoCallback {
     private void showUpdateUICustom(final VersionEntity versionEntity) {
         final UpdateDialogFragment dialogFragment = new UpdateDialogFragment();
         dialogFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-        dialogFragment.setTitle(mContext == null ? "发现新版本%s" : String.format(mContext.getString(R.string.version_title), "\n" + versionEntity.getVersionNo()));
-        dialogFragment.setContentTitleText(mContext == null ? "更新的内容" : TextUtils.isEmpty(versionEntity.getTitle()) ? mContext.getString(R.string.version_content_title) : versionEntity.getTitle());
-        dialogFragment.setContentText(mContext == null ? "%s" : String.format(mContext.getString(R.string.version_content), versionEntity.getUpdateDesc()));
+        dialogFragment.setTitle(String.format(mContext == null ? "发现新版本%s" : mContext.getString(R.string.version_title), "\n" + versionEntity.getVersionNo()));
+        dialogFragment.setContentTitleText(TextUtils.isEmpty(versionEntity.getTitle()) ? mContext == null ? "更新的内容" : mContext.getString(R.string.version_content_title) : versionEntity.getTitle());
+        dialogFragment.setContentText(String.format(mContext == null ? "%s" : mContext.getString(R.string.version_content), versionEntity.getUpdateDesc()));
         dialogFragment.setNegativeBtn(mContext == null ? "暂不" : mContext.getString(R.string.version_cancel), null);
         dialogFragment.setPositiveBtn(mContext == null ? "立即更新" : mContext.getString(R.string.version_confirm), () -> {
             NetWorkUtils netWorkUtils = new NetWorkUtils(mContext);
