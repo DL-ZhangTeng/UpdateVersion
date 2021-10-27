@@ -1,6 +1,6 @@
 # 应用内版本更新库UpdateVersion
 UpdateVersion是一个Android版本更新库。
-[GitHub仓库地址](https://github.com/duoluo9/UpdateVersion)
+[GitHub仓库地址](https://github.com/DL-ZhangTeng/UpdateVersion)
 ## 引入
 ### gradle
 ```groovy
@@ -10,7 +10,7 @@ allprojects {
     }
 }
 
-implementation 'com.github.duoluo9:UpdateVersion:1.1.0'
+implementation 'com.github.DL-ZhangTeng:UpdateVersion:1.1.0'
 ```
 ## 效果图
 ![无wifi](https://img-blog.csdnimg.cn/20200807172122393.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2R1b2x1bzk=,size_16,color_FFFFFF,t_70)
