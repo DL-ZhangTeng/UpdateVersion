@@ -1,8 +1,9 @@
 package com.zhangteng.updateversion;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.zhangteng.updateversionlibrary.UpdateVersion;
 import com.zhangteng.updateversionlibrary.callback.DownloadCallback;
@@ -35,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
                 .isHintVersion(true)
                 //是否显示更新dialog
                 .isUpdateDialogShow(true)
+                //是否显示移动网络提示dialog
+                .isNetCustomDialogShow(true)
+                //是否显示下载进度dialog
+                .isProgressDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
@@ -57,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
                 .isHintVersion(true)
                 //是否显示更新dialog
                 .isUpdateDialogShow(true)
+                //是否显示移动网络提示dialog
+                .isNetCustomDialogShow(true)
+                //是否显示下载进度dialog
+                .isProgressDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
@@ -79,6 +88,10 @@ public class MainActivity extends AppCompatActivity {
                 .isHintVersion(true)
                 //是否显示更新dialog
                 .isUpdateDialogShow(true)
+                //是否显示移动网络提示dialog
+                .isNetCustomDialogShow(true)
+                //是否显示下载进度dialog
+                .isProgressDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
@@ -101,6 +114,10 @@ public class MainActivity extends AppCompatActivity {
                 .isHintVersion(true)
                 //是否显示更新dialog
                 .isUpdateDialogShow(true)
+                //是否显示移动网络提示dialog
+                .isNetCustomDialogShow(true)
+                //是否显示下载进度dialog
+                .isProgressDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
@@ -126,6 +143,10 @@ public class MainActivity extends AppCompatActivity {
                 .isHintVersion(true)
                 //是否显示更新dialog
                 .isUpdateDialogShow(true)
+                //是否显示移动网络提示dialog
+                .isNetCustomDialogShow(true)
+                //是否显示下载进度dialog
+                .isProgressDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")

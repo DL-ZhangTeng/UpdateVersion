@@ -21,6 +21,7 @@ implementation 'com.github.DL-ZhangTeng:UpdateVersion:1.1.0'
 --- | -----
 isAutoInstall| 是否自动安装
 isUpdateDialogShow| 是否显示更新提示
+isNetCustomDialogShow| 是否显示移动网络提示
 isProgressDialogShow| 是否显示下载进度
 isHintVersion| 是否提示“当前已是最新版”
 isUpdateTest| 是否是测试模式（数据来源：versionInfo.json）
@@ -46,8 +47,15 @@ new UpdateVersion.Builder()
                 .isHintVersion(true)
                 //是否显示更新dialog
                 .isUpdateDialogShow(true)
+                //是否显示移动网络提示dialog
+                .isNetCustomDialogShow(true)
+                //是否显示下载进度dialog
+                .isProgressDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
+                .setThemeColor(R.color.colorPrimary)
+                .setNoNetImage(R.mipmap.upload_version_nonet)
+                .setUploadImage(R.mipmap.upload_version_gengxin)
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .build()
                 //执行更新任务
@@ -59,6 +67,10 @@ new UpdateVersion.Builder()
 ## 历史版本
 版本| 更新| 更新时间
 -------- | ----- | -----
+v1.1.4| 增加更新提示弹窗设置&移动网络弹窗设置|2021/12/22 at 20:10
+v1.1.3| string、color使用资源，可在app中使用同名资源替换dialog显示|2021/8/29 at 17:18
+v1.1.2| string、color使用资源，可在app中使用同名资源替换dialog显示|2021/8/29 at 17:06
+v1.1.1| 浏览器下载时使用服务器返回版本信息url|2020/8/27 at 16:31
 v1.1.0| 迁移到androidx|2020/7/22 0022 at 下午 12:04
 v1.0.2| 增加主题自定义| 2020/6/1 0001 at 下午 17:54
 

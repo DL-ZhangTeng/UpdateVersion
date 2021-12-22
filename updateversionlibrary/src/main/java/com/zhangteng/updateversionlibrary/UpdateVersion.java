@@ -1,8 +1,9 @@
 package com.zhangteng.updateversionlibrary;
 
+import android.util.Log;
+
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
-import android.util.Log;
 
 import com.zhangteng.updateversionlibrary.callback.VersionInfoCallback;
 import com.zhangteng.updateversionlibrary.http.HttpClient;
@@ -13,6 +14,7 @@ import com.zhangteng.updateversionlibrary.http.HttpClient;
 public class UpdateVersion extends VersionInfoCallback {
     private static boolean isAutoInstall = true;
     private static boolean isUpdateDialogShow = true;
+    private static boolean isNetCustomDialogShow = true;
     private static boolean isProgressDialogShow = true;
     private static boolean isHintVersion = true;
     private static boolean isUpdateTest = false;
@@ -41,6 +43,7 @@ public class UpdateVersion extends VersionInfoCallback {
     private void initParams(Builder builder) {
         isAutoInstall = builder.isAutoInstall;
         isUpdateDialogShow = builder.isUpdateDialogShow;
+        isNetCustomDialogShow = builder.isNetCustomDialogShow;
         isProgressDialogShow = builder.isProgressDialogShow;
         isHintVersion = builder.isHintVersion;
         isUpdateTest = builder.isUpdateTest;
@@ -67,6 +70,10 @@ public class UpdateVersion extends VersionInfoCallback {
 
     public static boolean isUpdateDialogShow() {
         return isUpdateDialogShow;
+    }
+
+    public static boolean isNetCustomDialogShow() {
+        return isNetCustomDialogShow;
     }
 
     public static boolean isProgressDialogShow() {
@@ -124,6 +131,7 @@ public class UpdateVersion extends VersionInfoCallback {
     public static class Builder {
         private boolean isAutoInstall = true;
         private boolean isUpdateDialogShow = true;
+        private boolean isNetCustomDialogShow = true;
         private boolean isProgressDialogShow = true;
         private boolean isHintVersion = true;
         private boolean isUpdateTest = false;
@@ -146,6 +154,11 @@ public class UpdateVersion extends VersionInfoCallback {
 
         public Builder isUpdateDialogShow(boolean updateDialogShow) {
             isUpdateDialogShow = updateDialogShow;
+            return this;
+        }
+
+        public Builder isNetCustomDialogShow(boolean netCustomDialogShow) {
+            isNetCustomDialogShow = netCustomDialogShow;
             return this;
         }
 

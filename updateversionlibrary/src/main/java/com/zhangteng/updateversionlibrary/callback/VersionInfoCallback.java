@@ -60,7 +60,7 @@ public class VersionInfoCallback {
                     UpdateVersion.setIsProgressDialogShow(true);
                     NetWorkUtils netWorkUtils = new NetWorkUtils(mContext);
                     int type = netWorkUtils.getNetType();
-                    if (type != 1) {
+                    if (type != 1 && UpdateVersion.isNetCustomDialogShow()) {
                         showUpdateUICustom(versionEntity);
                     } else {
                         httpClient.downloadApk(versionEntity, new DownloadCallback());
@@ -68,6 +68,19 @@ public class VersionInfoCallback {
                 } else {
                     if (UpdateVersion.isUpdateDialogShow()) {
                         showUpdateUICustom(versionEntity);
+                    } else {
+                        NetWorkUtils netWorkUtils = new NetWorkUtils(mContext);
+                        int type = netWorkUtils.getNetType();
+                        if (type != 1 && UpdateVersion.isNetCustomDialogShow()) {
+                            showNetCustomDialog(versionEntity);
+                        } else {
+                            if (!UpdateVersion.isUpdateDownloadWithBrowser()) {
+                                httpClient.downloadApk(versionEntity, new DownloadCallback());
+                            } else {
+                                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(versionEntity.getUrl()));
+                                mContext.startActivity(i);
+                            }
+                        }
                     }
                 }
             } else {
@@ -112,7 +125,7 @@ public class VersionInfoCallback {
         dialogFragment.setPositiveBtn(mContext == null ? "立即更新" : mContext.getString(R.string.version_confirm), () -> {
             NetWorkUtils netWorkUtils = new NetWorkUtils(mContext);
             int type = netWorkUtils.getNetType();
-            if (type != 1) {
+            if (type != 1 && UpdateVersion.isNetCustomDialogShow()) {
                 showNetCustomDialog(versionEntity);
             } else {
                 if (!UpdateVersion.isUpdateDownloadWithBrowser()) {
