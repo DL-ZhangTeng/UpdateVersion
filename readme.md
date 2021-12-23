@@ -30,6 +30,7 @@ isNotificationShow| 是否通知栏显示
 checkUpdateCommonUrl| 获取版本信息url
 provider| FileProvider(默认：BuildConfig.LIBRARY_PACKAGE_NAME + ".FileProvider")
 themeColor| 主题色
+setProgressDrawable| 增加进度条样式
 uploadImage| 提示更新背景图
 noNetImage| 无网络提示图
 ## 使用
@@ -54,6 +55,7 @@ new UpdateVersion.Builder()
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
                 .setThemeColor(R.color.colorPrimary)
+                .setProgressDrawable(R.drawable.progressbar)
                 .setNoNetImage(R.mipmap.upload_version_nonet)
                 .setUploadImage(R.mipmap.upload_version_gengxin)
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
@@ -67,6 +69,8 @@ new UpdateVersion.Builder()
 ## 历史版本
 版本| 更新| 更新时间
 -------- | ----- | -----
+v1.1.6| 增加进度条样式自定义|2021/12/23 at 12:41
+v1.1.5| 避免进度小于0或NaN|2021/12/23 at 10:27
 v1.1.4| 增加更新提示弹窗设置&移动网络弹窗设置|2021/12/22 at 20:10
 v1.1.3| string、color使用资源，可在app中使用同名资源替换dialog显示|2021/8/29 at 17:18
 v1.1.2| string、color使用资源，可在app中使用同名资源替换dialog显示|2021/8/29 at 17:06

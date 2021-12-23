@@ -1,16 +1,19 @@
 package com.zhangteng.updateversion;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.zhangteng.androidpermission.AndroidPermission;
+import com.zhangteng.androidpermission.Permission;
+import com.zhangteng.androidpermission.callback.Callback;
 import com.zhangteng.updateversionlibrary.UpdateVersion;
 import com.zhangteng.updateversionlibrary.callback.DownloadCallback;
 import com.zhangteng.updateversionlibrary.callback.VersionInfoCallback;
 import com.zhangteng.updateversionlibrary.entity.VersionEntity;
 import com.zhangteng.updateversionlibrary.http.CommonHttpClient;
-import com.zhangteng.updateversionlibrary.http.HttpClient;
 
 import java.io.File;
 
@@ -20,6 +23,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AndroidPermission androidPermission = new AndroidPermission.Buidler()
+                .with(this)
+                .permission(Permission.Group.STORAGE)
+                .callback(new Callback() {
+
+                    @Override
+                    public void success(Activity permissionActivity) {
+
+                    }
+
+                    @Override
+                    public void failure(Activity permissionActivity) {
+
+                    }
+
+                    @Override
+                    public void nonExecution(Activity permissionActivity) {
+
+                    }
+                })
+                .build();
+        androidPermission.execute();
     }
 
     public void onClick1(View view) {
@@ -122,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 .isUpdateDownloadWithBrowser(false)
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .setThemeColor(R.color.colorPrimary)
+                .setProgressDrawable(R.drawable.progressbar_self)
                 .setNoNetImage(R.mipmap.upload_version_gengxin)
                 .setUploadImage(R.mipmap.upload_version_nonet)
                 .build()
@@ -136,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 //通知栏显示
                 .isNotificationShow(false)
                 //是否自动安装
-                .isAutoInstall(false)
+                .isAutoInstall(true)
                 //获取服务器的版本信息
                 .isCheckUpdateCommonUrl("http://")
                 //是否提示更新信息
@@ -151,21 +177,21 @@ public class MainActivity extends AppCompatActivity {
                 .isUpdateDownloadWithBrowser(false)
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .setThemeColor(R.color.colorPrimary)
+                .setProgressDrawable(R.drawable.progressbar_self)
                 .build()
                 //执行更新任务
-                .updateVersion(new HttpClient() {
+                .updateVersion(new CommonHttpClient(this, getSupportFragmentManager()) {
                     @Override
                     public void getVersionInfo(String versionInfoUrl, VersionInfoCallback versionInfoCallback) {
                         versionInfoCallback.onPreExecute(MainActivity.this, getSupportFragmentManager(), this);
                         MainActivity.this.updateVersion(versionInfoCallback);
 
                     }
-
-                    @Override
-                    public void downloadApk(VersionEntity versionEntity, DownloadCallback downloadCallback) {
-                        downloadCallback.onPreExecute(MainActivity.this);
-                        MainActivity.this.downloadApk(versionEntity, downloadCallback);
-                    }
+//                    @Override
+//                    public void downloadApk(VersionEntity versionEntity, DownloadCallback downloadCallback) {
+//                        downloadCallback.onPreExecute(MainActivity.this);
+//                        MainActivity.this.downloadApk(versionEntity, downloadCallback);
+//                    }
                 });
     }
 
@@ -183,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void updateVersion(VersionInfoCallback versionInfoCallback) {
         VersionEntity versionEntity = new VersionEntity();
-        versionEntity.setUrl("");
+        versionEntity.setUrl("http://tp.kaishuihu.com/apk/fdy_1-1.0.0-2021-12-23.apk");
         versionEntity.setVersionNo("2.0");
         versionEntity.setVersionCode(2);
         versionInfoCallback.doInBackground(versionEntity);

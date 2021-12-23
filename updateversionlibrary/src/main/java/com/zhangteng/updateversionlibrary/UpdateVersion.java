@@ -25,6 +25,8 @@ public class UpdateVersion extends VersionInfoCallback {
     @ColorRes
     private static int themeColor = R.color.version_theme_color;
     @DrawableRes
+    private static int progressDrawable = R.drawable.progressbar;
+    @DrawableRes
     private static int uploadImage = R.mipmap.upload_version_gengxin;
     @DrawableRes
     private static int noNetImage = R.mipmap.upload_version_nonet;
@@ -52,6 +54,7 @@ public class UpdateVersion extends VersionInfoCallback {
         isNotificationShow = builder.isNotificationShow;
         provider = builder.provider;
         themeColor = builder.themeColor;
+        progressDrawable = builder.progressDrawable;
         uploadImage = builder.uploadImage;
         noNetImage = builder.noNetImage;
     }
@@ -112,6 +115,10 @@ public class UpdateVersion extends VersionInfoCallback {
         return themeColor;
     }
 
+    public static int getProgressDrawable() {
+        return progressDrawable;
+    }
+
     public static int getUploadImage() {
         return uploadImage;
     }
@@ -142,6 +149,8 @@ public class UpdateVersion extends VersionInfoCallback {
         private String provider = BuildConfig.LIBRARY_PACKAGE_NAME + ".FileProvider";
         @ColorRes
         private int themeColor = R.color.version_theme_color;
+        @DrawableRes
+        private int progressDrawable = R.drawable.progressbar;
         @DrawableRes
         private int uploadImage = R.mipmap.upload_version_gengxin;
         @DrawableRes
@@ -202,12 +211,17 @@ public class UpdateVersion extends VersionInfoCallback {
             return this;
         }
 
-        public Builder setUploadImage(int uploadImage) {
+        public Builder setProgressDrawable(@DrawableRes int progressDrawable) {
+            this.progressDrawable = progressDrawable;
+            return this;
+        }
+
+        public Builder setUploadImage(@DrawableRes int uploadImage) {
             this.uploadImage = uploadImage;
             return this;
         }
 
-        public Builder setNoNetImage(int noNetImage) {
+        public Builder setNoNetImage(@DrawableRes int noNetImage) {
             this.noNetImage = noNetImage;
             return this;
         }

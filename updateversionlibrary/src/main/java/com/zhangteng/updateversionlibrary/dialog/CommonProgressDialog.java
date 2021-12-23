@@ -7,10 +7,7 @@ package com.zhangteng.updateversionlibrary.dialog;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
@@ -48,14 +45,14 @@ public class CommonProgressDialog extends AlertDialog {
         initFormats();
     }
 
-    @SuppressLint("HandlerLeak")
+    @SuppressLint({"HandlerLeak", "UseCompatLoadingForDrawables"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.common_progress_dialog);
         mProgress = findViewById(R.id.progress);
-        if (UpdateVersion.getThemeColor() != R.color.version_theme_color) {
-            mProgress.setProgressDrawable(getProgressLayerDrawable());
+        if (UpdateVersion.getProgressDrawable() != R.drawable.progressbar) {
+            mProgress.setProgressDrawable(getContext().getDrawable(UpdateVersion.getProgressDrawable()));
         }
         mProgressNumber = findViewById(R.id.progress_number);
         mProgressPercent = findViewById(R.id.progress_percent);
@@ -152,38 +149,6 @@ public class CommonProgressDialog extends AlertDialog {
     protected void onStop() {
         super.onStop();
         mHasStarted = false;
-    }
-
-    private LayerDrawable getProgressLayerDrawable() {
-
-        int radius0 = getContext().getResources().getDimensionPixelSize(R.dimen.dialog_radius);
-        float[] outerR = new float[]{radius0, radius0, radius0, radius0, radius0, radius0, radius0, radius0};
-        RoundRectShape roundRectShape0 = new RoundRectShape(outerR, null, null);
-
-        ShapeDrawable background = new ShapeDrawable();
-        background.setPadding(0, 0, 0, 0);
-        background.setShape(roundRectShape0);
-        background.getPaint().setStyle(Paint.Style.FILL);
-        background.getPaint().setColor(Color.parseColor("#f7f7f7"));
-
-        ShapeDrawable secondaryProgress = new ShapeDrawable();
-        background.setPadding(0, 0, 0, 0);
-        secondaryProgress.setShape(roundRectShape0);
-        secondaryProgress.getPaint().setStyle(Paint.Style.FILL);
-        secondaryProgress.getPaint().setColor(Color.parseColor("#eeeeee"));
-
-        ShapeDrawable progress = new ShapeDrawable();
-        background.setPadding(0, 0, 0, 0);
-        progress.setShape(roundRectShape0);
-        progress.getPaint().setStyle(Paint.Style.FILL);
-        progress.getPaint().setColor(getContext().getResources().getColor(UpdateVersion.getThemeColor()));
-
-        Drawable[] layers = {background, secondaryProgress, progress};
-        LayerDrawable layerDrawable = new LayerDrawable(layers);
-        layerDrawable.setId(0, android.R.id.background);
-        layerDrawable.setId(1, android.R.id.secondaryProgress);
-        layerDrawable.setId(1, android.R.id.progress);
-        return layerDrawable;
     }
 
     private ShapeDrawable getTitleBackgroundDrawable() {
