@@ -7,6 +7,7 @@ package com.zhangteng.updateversionlibrary.dialog;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -163,13 +164,13 @@ public class CommonProgressDialog extends AlertDialog {
         background.setPadding(0, 0, 0, 0);
         background.setShape(roundRectShape0);
         background.getPaint().setStyle(Paint.Style.FILL);
-        background.getPaint().setColor(0xfff7f7f7);
+        background.getPaint().setColor(Color.parseColor("#f7f7f7"));
 
         ShapeDrawable secondaryProgress = new ShapeDrawable();
         background.setPadding(0, 0, 0, 0);
         secondaryProgress.setShape(roundRectShape0);
         secondaryProgress.getPaint().setStyle(Paint.Style.FILL);
-        secondaryProgress.getPaint().setColor(0xffeeeeee);
+        secondaryProgress.getPaint().setColor(Color.parseColor("#eeeeee"));
 
         ShapeDrawable progress = new ShapeDrawable();
         background.setPadding(0, 0, 0, 0);
