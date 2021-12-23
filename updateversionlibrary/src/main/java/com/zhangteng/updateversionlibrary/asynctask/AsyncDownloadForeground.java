@@ -65,6 +65,8 @@ public abstract class AsyncDownloadForeground extends AsyncTask<VersionEntity, I
         try {
             url = new URL(params[0].getUrl());
             urlConnection = (HttpURLConnection) url.openConnection();
+            // 2.2版本以上HttpURLConnection跟服务交互采用了"gzip"压缩，添加这行代码避免total = -1
+            urlConnection.setRequestProperty("Accept-Encoding", "identity");
             //设置超时间为3秒
             urlConnection.setConnectTimeout(3 * 1000);
             //防止屏蔽程序抓取而返回403错误
