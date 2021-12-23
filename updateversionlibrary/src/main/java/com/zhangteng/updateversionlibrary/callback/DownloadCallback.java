@@ -89,7 +89,7 @@ public class DownloadCallback {
     public void onPreExecute(Context context) {
         this.mContext = context;
         if (UpdateVersion.isProgressDialogShow()) {
-            progressDialog = new CommonProgressDialog(context);
+            progressDialog = new CommonProgressDialog(context, R.style.Translucent_Dialog);
             progressDialog.setCancelable(false);
             progressDialog.setMessage(mContext == null ? "正在下载更新" : mContext.getString(R.string.progress_message));
             if (!UpdateVersion.isNotificationShow()) {
