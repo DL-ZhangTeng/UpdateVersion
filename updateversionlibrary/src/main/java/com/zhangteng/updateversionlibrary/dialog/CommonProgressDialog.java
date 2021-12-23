@@ -92,11 +92,15 @@ public class CommonProgressDialog extends AlertDialog {
             mProgressNumber.setText("");
         }
         if (mProgressPercentFormat != null) {
-            double percent = (double) progress / (double) max;
+            double percent = 0;
+            if (max >= 0) {
+                percent = (double) progress / (double) max;
+            }
             SpannableString tmp = new SpannableString(mProgressPercentFormat.format(percent));
-            if (0 < tmp.length())
+            if (0 < tmp.length()) {
                 tmp.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
                         0, tmp.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
             mProgressPercent.setText(tmp);
         } else {
             mProgressPercent.setText("");
