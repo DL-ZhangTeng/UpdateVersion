@@ -8,7 +8,7 @@ import com.zhangteng.updateversionlibrary.callback.VersionInfoCallback;
 import com.zhangteng.updateversionlibrary.entity.VersionEntity;
 import com.zhangteng.updateversionlibrary.utils.HttpRequest;
 import com.zhangteng.updateversionlibrary.utils.JSONHandler;
-import com.zhangteng.updateversionlibrary.utils.URLUtils;
+import com.zhangteng.utils.URLUtilsKt;
 
 /**
  * Created by swing on 2018/5/14.
@@ -47,7 +47,7 @@ public abstract class AsyncCheck extends AsyncTask<String, Integer, VersionEntit
             return null;
         }
         String url = params[0];
-        if (!URLUtils.isNetworkUrl(url)) {
+        if (!URLUtilsKt.isNetworkUrl(url)) {
             return null;
         }
         try {

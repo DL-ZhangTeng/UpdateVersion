@@ -18,7 +18,8 @@ import com.zhangteng.updateversionlibrary.UpdateVersion;
 import com.zhangteng.updateversionlibrary.dialog.UpdateDialogFragment;
 import com.zhangteng.updateversionlibrary.entity.VersionEntity;
 import com.zhangteng.updateversionlibrary.http.HttpClient;
-import com.zhangteng.updateversionlibrary.utils.NetWorkUtils;
+import com.zhangteng.utils.NetType;
+import com.zhangteng.utils.NetworkUtilsKt;
 
 import java.io.InputStream;
 
@@ -58,9 +59,8 @@ public class VersionInfoCallback {
                 if (versionEntity.getForceUpdate() != 0) {
                     UpdateVersion.setIsAutoInstall(true);
                     UpdateVersion.setIsProgressDialogShow(true);
-                    NetWorkUtils netWorkUtils = new NetWorkUtils(mContext);
-                    int type = netWorkUtils.getNetType();
-                    if (type != 1 && UpdateVersion.isNetCustomDialogShow()) {
+                    NetType type = NetworkUtilsKt.getConnectedType(mContext);
+                    if (type != NetType.Wifi && UpdateVersion.isNetCustomDialogShow()) {
                         showUpdateUICustom(versionEntity);
                     } else {
                         httpClient.downloadApk(versionEntity, new DownloadCallback());
@@ -69,9 +69,8 @@ public class VersionInfoCallback {
                     if (UpdateVersion.isUpdateDialogShow()) {
                         showUpdateUICustom(versionEntity);
                     } else {
-                        NetWorkUtils netWorkUtils = new NetWorkUtils(mContext);
-                        int type = netWorkUtils.getNetType();
-                        if (type != 1 && UpdateVersion.isNetCustomDialogShow()) {
+                        NetType type = NetworkUtilsKt.getConnectedType(mContext);
+                        if (type != NetType.Wifi && UpdateVersion.isNetCustomDialogShow()) {
                             showNetCustomDialog(versionEntity);
                         } else {
                             if (!UpdateVersion.isUpdateDownloadWithBrowser()) {
@@ -123,9 +122,8 @@ public class VersionInfoCallback {
         dialogFragment.setContentText(String.format(mContext == null ? "%s" : mContext.getString(R.string.version_content), versionEntity.getUpdateDesc()));
         dialogFragment.setNegativeBtn(mContext == null ? "暂不" : mContext.getString(R.string.version_cancel), null);
         dialogFragment.setPositiveBtn(mContext == null ? "立即更新" : mContext.getString(R.string.version_confirm), () -> {
-            NetWorkUtils netWorkUtils = new NetWorkUtils(mContext);
-            int type = netWorkUtils.getNetType();
-            if (type != 1 && UpdateVersion.isNetCustomDialogShow()) {
+            NetType type = NetworkUtilsKt.getConnectedType(mContext);
+            if (type != NetType.Wifi && UpdateVersion.isNetCustomDialogShow()) {
                 showNetCustomDialog(versionEntity);
             } else {
                 if (!UpdateVersion.isUpdateDownloadWithBrowser()) {
