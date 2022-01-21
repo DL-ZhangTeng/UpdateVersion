@@ -10,7 +10,7 @@ allprojects {
     }
 }
 
-implementation 'com.github.DL-ZhangTeng:UpdateVersion:1.1.0'
+implementation 'com.github.DL-ZhangTeng:UpdateVersion:1.2.0'
 ```
 ## 效果图
 ![无wifi](https://img-blog.csdnimg.cn/20200807172122393.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2R1b2x1bzk=,size_16,color_FFFFFF,t_70)
@@ -69,6 +69,7 @@ new UpdateVersion.Builder()
 ## 历史版本
 版本| 更新| 更新时间
 -------- | ----- | -----
+v1.2.0| 使用base库的utils|2022/1/21 at 16:01
 v1.1.6| 增加进度条样式自定义|2021/12/23 at 12:41
 v1.1.5| 避免进度小于0或NaN|2021/12/23 at 10:27
 v1.1.4| 增加更新提示弹窗设置&移动网络弹窗设置|2021/12/22 at 20:10
