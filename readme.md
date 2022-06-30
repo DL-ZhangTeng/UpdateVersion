@@ -11,6 +11,8 @@ allprojects {
 }
 
 implementation 'com.github.DL-ZhangTeng:UpdateVersion:1.2.0'
+    //使用的三方库
+    implementation 'com.github.DL-ZhangTeng.BaseLibrary:utils:1.3.5'
 ```
 ## 效果图
 ![无wifi](https://img-blog.csdnimg.cn/20200807172122393.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2R1b2x1bzk=,size_16,color_FFFFFF,t_70)
