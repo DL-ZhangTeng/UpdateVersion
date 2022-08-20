@@ -10,9 +10,9 @@ allprojects {
     }
 }
 
-implementation 'com.github.DL-ZhangTeng:UpdateVersion:1.2.0'
+implementation 'com.github.DL-ZhangTeng:UpdateVersion:1.3.0'
     //使用的三方库
-    implementation 'com.github.DL-ZhangTeng.BaseLibrary:utils:1.3.5'
+    implementation 'com.github.DL-ZhangTeng.BaseLibrary:utils:1.4.0'
 ```
 ## 效果图
 ![无wifi](https://img-blog.csdnimg.cn/20200807172122393.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2R1b2x1bzk=,size_16,color_FFFFFF,t_70)
@@ -30,6 +30,7 @@ isUpdateTest| 是否是测试模式（数据来源：versionInfo.json）
 isUpdateDownloadWithBrowser| 是否使用浏览器下载
 isNotificationShow| 是否通知栏显示
 checkUpdateCommonUrl| 获取版本信息url
+sslParams| HTTPS 证书
 provider| FileProvider(默认：BuildConfig.LIBRARY_PACKAGE_NAME + ".FileProvider")
 themeColor| 主题色
 setProgressDrawable| 增加进度条样式
@@ -44,8 +45,6 @@ new UpdateVersion.Builder()
                 .isNotificationShow(true)
                 //是否自动安装
                 .isAutoInstall(true)
-                //获取服务器的版本信息
-                .isCheckUpdateCommonUrl("http://")
                 //是否提示更新信息
                 .isHintVersion(true)
                 //是否显示更新dialog
@@ -56,11 +55,14 @@ new UpdateVersion.Builder()
                 .isProgressDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
+                //获取服务器的版本信息
+                .setCheckUpdateCommonUrl("http://")
+                .setSSLParams(SSLUtils.INSTANCE.getSslSocketFactory())
+                .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .setThemeColor(R.color.colorPrimary)
                 .setProgressDrawable(R.drawable.progressbar)
                 .setNoNetImage(R.mipmap.upload_version_nonet)
                 .setUploadImage(R.mipmap.upload_version_gengxin)
-                .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .build()
                 //执行更新任务
                 .updateVersion(new CommonHttpClient(this, this.getSupportFragmentManager()));
@@ -71,6 +73,8 @@ new UpdateVersion.Builder()
 ## 历史版本
 版本| 更新| 更新时间
 -------- | ----- | -----
+v1.3.0| 增加Https支持|2022/8/20 at 13:48
+v1.2.1| 使用utils新版本|2022/6/30 at 10:30
 v1.2.0| 使用base库的utils|2022/1/21 at 16:01
 v1.1.6| 增加进度条样式自定义|2021/12/23 at 12:41
 v1.1.5| 避免进度小于0或NaN|2021/12/23 at 10:27
@@ -82,10 +86,7 @@ v1.1.0| 迁移到androidx|2020/7/22 0022 at 下午 12:04
 v1.0.2| 增加主题自定义| 2020/6/1 0001 at 下午 17:54
 
 ## 赞赏
-如果您喜欢UpdateVersion，或感觉UpdateVersion帮助到了您，可以点右上角“Star”支持一下，您的支持就是我的动力，谢谢。您也可以扫描下面的二维码，请作者喝杯茶 tea
-
-![支付宝收款码](https://img-blog.csdnimg.cn/20200807160902219.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2R1b2x1bzk=,size_16,color_FFFFFF,t_70)
-![微信收款码](https://img-blog.csdnimg.cn/20200807160902112.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2R1b2x1bzk=,size_16,color_FFFFFF,t_70)
+如果您喜欢UpdateVersion，或感觉UpdateVersion帮助到了您，可以点右上角“Star”支持一下，您的支持就是我的动力，谢谢。
 
 ## 联系我
 邮箱：763263311@qq.com/ztxiaoran@foxmail.com

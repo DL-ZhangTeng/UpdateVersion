@@ -56,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
                 .isNotificationShow(true)
                 //是否自动安装
                 .isAutoInstall(true)
-                //获取服务器的版本信息
-                .isCheckUpdateCommonUrl("http://")
                 //是否提示更新信息
                 .isHintVersion(true)
                 //是否显示更新dialog
@@ -68,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
                 .isProgressDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
+                //获取服务器的版本信息
+                .setCheckUpdateCommonUrl("http://")
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .build()
                 //执行更新任务
@@ -82,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
                 .isNotificationShow(false)
                 //是否自动安装
                 .isAutoInstall(true)
-                //获取服务器的版本信息
-                .isCheckUpdateCommonUrl("http://")
                 //是否提示更新信息
                 .isHintVersion(true)
                 //是否显示更新dialog
@@ -94,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
                 .isProgressDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
+                //获取服务器的版本信息
+                .setCheckUpdateCommonUrl("http://")
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .build()
                 //执行更新任务
@@ -108,8 +108,6 @@ public class MainActivity extends AppCompatActivity {
                 .isNotificationShow(true)
                 //是否自动安装
                 .isAutoInstall(false)
-                //获取服务器的版本信息
-                .isCheckUpdateCommonUrl("http://")
                 //是否提示更新信息
                 .isHintVersion(true)
                 //是否显示更新dialog
@@ -120,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
                 .isProgressDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
+                //获取服务器的版本信息
+                .setCheckUpdateCommonUrl("http://")
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .build()
                 //执行更新任务
@@ -134,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
                 .isNotificationShow(false)
                 //是否自动安装
                 .isAutoInstall(false)
-                //获取服务器的版本信息
-                .isCheckUpdateCommonUrl("http://")
                 //是否提示更新信息
                 .isHintVersion(true)
                 //是否显示更新dialog
@@ -146,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
                 .isProgressDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
+                //获取服务器的版本信息
+                .setCheckUpdateCommonUrl("http://")
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .setThemeColor(R.color.colorPrimary)
                 .setProgressDrawable(R.drawable.progressbar_self)
@@ -164,8 +164,6 @@ public class MainActivity extends AppCompatActivity {
                 .isNotificationShow(false)
                 //是否自动安装
                 .isAutoInstall(true)
-                //获取服务器的版本信息
-                .isCheckUpdateCommonUrl("http://")
                 //是否提示更新信息
                 .isHintVersion(true)
                 //是否显示更新dialog
@@ -176,10 +174,12 @@ public class MainActivity extends AppCompatActivity {
                 .isProgressDialogShow(true)
                 //是否使用浏览器更新
                 .isUpdateDownloadWithBrowser(false)
+                //获取服务器的版本信息
+                .setCheckUpdateCommonUrl("http://")
+                .setSSLParams(SSLUtils.INSTANCE.getSslSocketFactory())
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .setThemeColor(R.color.colorPrimary)
                 .setProgressDrawable(R.drawable.progressbar_self)
-                .setSSLParams(SSLUtils.INSTANCE.getSslSocketFactory())
                 .build()
                 //执行更新任务
                 .updateVersion(new CommonHttpClient(this, getSupportFragmentManager()) {

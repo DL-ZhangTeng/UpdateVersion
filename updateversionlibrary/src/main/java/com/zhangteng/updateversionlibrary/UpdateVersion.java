@@ -210,7 +210,7 @@ public class UpdateVersion extends VersionInfoCallback {
             return this;
         }
 
-        public Builder isCheckUpdateCommonUrl(String checkUpdateCommonUrl) {
+        public Builder setCheckUpdateCommonUrl(String checkUpdateCommonUrl) {
             this.checkUpdateCommonUrl = checkUpdateCommonUrl;
             return this;
         }
