@@ -6,7 +6,6 @@ import com.zhangteng.updateversionlibrary.UpdateVersion;
 import com.zhangteng.updateversionlibrary.config.Constant;
 import com.zhangteng.updateversionlibrary.entity.VersionEntity;
 import com.zhangteng.utils.SSLUtils;
-import com.zhangteng.utils.URLUtilsKt;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -70,7 +69,7 @@ public abstract class AsyncDownloadForeground extends AsyncTask<VersionEntity, I
         try {
             url = new URL(params[0].getUrl());
             urlConnection = (HttpURLConnection) url.openConnection();
-            if (URLUtilsKt.isHttpsUrl(params[0].getUrl()) && urlConnection instanceof HttpsURLConnection) {
+            if (urlConnection instanceof HttpsURLConnection) {
                 ((HttpsURLConnection) urlConnection).setSSLSocketFactory(UpdateVersion.getSslParams().getSSLSocketFactory());
                 ((HttpsURLConnection) urlConnection).setHostnameVerifier(SSLUtils.INSTANCE.getUnSafeHostnameVerifier());
             }

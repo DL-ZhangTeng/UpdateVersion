@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.zhangteng.updateversionlibrary.UpdateVersion;
 import com.zhangteng.utils.SSLUtils;
-import com.zhangteng.utils.URLUtilsKt;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -22,7 +21,7 @@ public class HttpRequest {
         try {
             URL urlPath = new URL(url);
             HttpURLConnection httpURLConnection = (HttpURLConnection) urlPath.openConnection();
-            if (URLUtilsKt.isHttpsUrl(url) && httpURLConnection instanceof HttpsURLConnection) {
+            if (httpURLConnection instanceof HttpsURLConnection) {
                 ((HttpsURLConnection) httpURLConnection).setSSLSocketFactory(UpdateVersion.getSslParams().getSSLSocketFactory());
                 ((HttpsURLConnection) httpURLConnection).setHostnameVerifier(SSLUtils.INSTANCE.getUnSafeHostnameVerifier());
             }
