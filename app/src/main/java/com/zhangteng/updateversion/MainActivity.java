@@ -14,6 +14,7 @@ import com.zhangteng.updateversionlibrary.callback.DownloadCallback;
 import com.zhangteng.updateversionlibrary.callback.VersionInfoCallback;
 import com.zhangteng.updateversionlibrary.entity.VersionEntity;
 import com.zhangteng.updateversionlibrary.http.CommonHttpClient;
+import com.zhangteng.utils.SSLUtils;
 
 import java.io.File;
 
@@ -178,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
                 .setThemeColor(R.color.colorPrimary)
                 .setProgressDrawable(R.drawable.progressbar_self)
+                .setSSLParams(SSLUtils.INSTANCE.getSslSocketFactory())
                 .build()
                 //执行更新任务
                 .updateVersion(new CommonHttpClient(this, getSupportFragmentManager()) {
@@ -209,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void updateVersion(VersionInfoCallback versionInfoCallback) {
         VersionEntity versionEntity = new VersionEntity();
-        versionEntity.setUrl("http://tp.kaishuihu.com/apk/fdy_1-1.0.0-2021-12-23.apk");
+        versionEntity.setUrl("https://tp.kaishuihu.com/apk/fdy_1-1.0.0-2021-12-23.apk");
         versionEntity.setVersionNo("2.0");
         versionEntity.setVersionCode(2);
         versionInfoCallback.doInBackground(versionEntity);

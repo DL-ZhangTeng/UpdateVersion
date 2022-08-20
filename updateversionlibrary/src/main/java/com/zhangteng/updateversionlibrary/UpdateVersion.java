@@ -7,29 +7,34 @@ import androidx.annotation.DrawableRes;
 
 import com.zhangteng.updateversionlibrary.callback.VersionInfoCallback;
 import com.zhangteng.updateversionlibrary.http.HttpClient;
+import com.zhangteng.utils.SSLUtils;
 
 /**
  * Created by swing on 2018/5/11.
  */
 public class UpdateVersion extends VersionInfoCallback {
-    private static boolean isAutoInstall = true;
-    private static boolean isUpdateDialogShow = true;
-    private static boolean isNetCustomDialogShow = true;
-    private static boolean isProgressDialogShow = true;
-    private static boolean isHintVersion = true;
-    private static boolean isUpdateTest = false;
-    private static boolean isUpdateDownloadWithBrowser = false;
-    private static boolean isNotificationShow = false;
-    private static String checkUpdateCommonUrl = "";
-    private static String provider = BuildConfig.LIBRARY_PACKAGE_NAME + ".FileProvider";
+    private static boolean isAutoInstall;
+    private static boolean isUpdateDialogShow;
+    private static boolean isNetCustomDialogShow;
+    private static boolean isProgressDialogShow;
+    private static boolean isHintVersion;
+    private static boolean isUpdateTest;
+    private static boolean isUpdateDownloadWithBrowser;
+    private static boolean isNotificationShow;
+
+    private static String checkUpdateCommonUrl;
+    private static SSLUtils.SSLParams sslParams;
+
+    private static String provider;
     @ColorRes
-    private static int themeColor = R.color.version_theme_color;
+    private static int themeColor;
     @DrawableRes
-    private static int progressDrawable = R.drawable.progressbar;
+    private static int progressDrawable;
     @DrawableRes
-    private static int uploadImage = R.mipmap.upload_version_gengxin;
+    private static int uploadImage;
     @DrawableRes
-    private static int noNetImage = R.mipmap.upload_version_nonet;
+    private static int noNetImage;
+
     private Builder builder;
 
     public UpdateVersion(Builder builder) {
@@ -50,8 +55,9 @@ public class UpdateVersion extends VersionInfoCallback {
         isHintVersion = builder.isHintVersion;
         isUpdateTest = builder.isUpdateTest;
         isUpdateDownloadWithBrowser = builder.isUpdateDownloadWithBrowser;
-        checkUpdateCommonUrl = builder.checkUpdateCommonUrl;
         isNotificationShow = builder.isNotificationShow;
+        checkUpdateCommonUrl = builder.checkUpdateCommonUrl;
+        sslParams = builder.sslParams;
         provider = builder.provider;
         themeColor = builder.themeColor;
         progressDrawable = builder.progressDrawable;
@@ -95,16 +101,16 @@ public class UpdateVersion extends VersionInfoCallback {
         return isUpdateDownloadWithBrowser;
     }
 
-    public static String getCheckUpdateCommonUrl() {
-        return checkUpdateCommonUrl;
-    }
-
     public static boolean isNotificationShow() {
         return isNotificationShow;
     }
 
-    public Builder getBuilder() {
-        return builder;
+    public static String getCheckUpdateCommonUrl() {
+        return checkUpdateCommonUrl;
+    }
+
+    public static SSLUtils.SSLParams getSslParams() {
+        return sslParams;
     }
 
     public static String getProvider() {
@@ -127,6 +133,10 @@ public class UpdateVersion extends VersionInfoCallback {
         return noNetImage;
     }
 
+    public Builder getBuilder() {
+        return builder;
+    }
+
     public void updateVersion(HttpClient httpClient) {
         if (httpClient == null) {
             Log.e("UpdateVersion", "没有初始化网络请求客户端");
@@ -144,8 +154,10 @@ public class UpdateVersion extends VersionInfoCallback {
         private boolean isUpdateTest = false;
         private boolean isUpdateDownloadWithBrowser = false;
         private boolean isNotificationShow = false;
+
         private String checkUpdateCommonUrl = "";
-        private UpdateVersion updateVersion;
+        private SSLUtils.SSLParams sslParams = SSLUtils.INSTANCE.getSslSocketFactory();
+
         private String provider = BuildConfig.LIBRARY_PACKAGE_NAME + ".FileProvider";
         @ColorRes
         private int themeColor = R.color.version_theme_color;
@@ -155,6 +167,8 @@ public class UpdateVersion extends VersionInfoCallback {
         private int uploadImage = R.mipmap.upload_version_gengxin;
         @DrawableRes
         private int noNetImage = R.mipmap.upload_version_nonet;
+
+        private UpdateVersion updateVersion;
 
         public Builder isAutoInstall(boolean autoInstall) {
             isAutoInstall = autoInstall;
@@ -191,13 +205,23 @@ public class UpdateVersion extends VersionInfoCallback {
             return this;
         }
 
+        public Builder isNotificationShow(boolean isNotificationShow) {
+            this.isNotificationShow = isNotificationShow;
+            return this;
+        }
+
         public Builder isCheckUpdateCommonUrl(String checkUpdateCommonUrl) {
             this.checkUpdateCommonUrl = checkUpdateCommonUrl;
             return this;
         }
 
-        public Builder isNotificationShow(boolean isNotificationShow) {
-            this.isNotificationShow = isNotificationShow;
+        /**
+         * description HTTPS 证书
+         *
+         * @param sslParams ssl 参数 SSLSocketFactory和HostnameVerifier
+         */
+        public Builder setSSLParams(SSLUtils.SSLParams sslParams) {
+            this.sslParams = sslParams;
             return this;
         }
 
@@ -206,21 +230,41 @@ public class UpdateVersion extends VersionInfoCallback {
             return this;
         }
 
+        /**
+         * description 主题色
+         *
+         * @param themeColor 主题色
+         */
         public Builder setThemeColor(@ColorRes int themeColor) {
             this.themeColor = themeColor;
             return this;
         }
 
+        /**
+         * description 进度条样式
+         *
+         * @param progressDrawable 进度条样式
+         */
         public Builder setProgressDrawable(@DrawableRes int progressDrawable) {
             this.progressDrawable = progressDrawable;
             return this;
         }
 
+        /**
+         * description 更新背景图
+         *
+         * @param uploadImage 更新图
+         */
         public Builder setUploadImage(@DrawableRes int uploadImage) {
             this.uploadImage = uploadImage;
             return this;
         }
 
+        /**
+         * description 无网络背景图
+         *
+         * @param noNetImage 无网络图
+         */
         public Builder setNoNetImage(@DrawableRes int noNetImage) {
             this.noNetImage = noNetImage;
             return this;

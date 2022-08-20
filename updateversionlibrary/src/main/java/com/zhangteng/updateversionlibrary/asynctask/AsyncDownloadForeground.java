@@ -2,8 +2,11 @@ package com.zhangteng.updateversionlibrary.asynctask;
 
 import android.os.AsyncTask;
 
+import com.zhangteng.updateversionlibrary.UpdateVersion;
 import com.zhangteng.updateversionlibrary.config.Constant;
 import com.zhangteng.updateversionlibrary.entity.VersionEntity;
+import com.zhangteng.utils.SSLUtils;
+import com.zhangteng.utils.URLUtilsKt;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,6 +15,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by swing on 2018/5/14.
@@ -65,6 +70,10 @@ public abstract class AsyncDownloadForeground extends AsyncTask<VersionEntity, I
         try {
             url = new URL(params[0].getUrl());
             urlConnection = (HttpURLConnection) url.openConnection();
+            if (URLUtilsKt.isHttpsUrl(params[0].getUrl()) && urlConnection instanceof HttpsURLConnection) {
+                ((HttpsURLConnection) urlConnection).setSSLSocketFactory(UpdateVersion.getSslParams().getSSLSocketFactory());
+                ((HttpsURLConnection) urlConnection).setHostnameVerifier(SSLUtils.INSTANCE.getUnSafeHostnameVerifier());
+            }
             // 2.2版本以上HttpURLConnection跟服务交互采用了"gzip"压缩，添加这行代码避免total = -1
             urlConnection.setRequestProperty("Accept-Encoding", "identity");
             //设置超时间为3秒
