@@ -10,9 +10,9 @@ allprojects {
     }
 }
 
-implementation 'com.github.DL-ZhangTeng:UpdateVersion:1.4.0'
+implementation 'com.github.DL-ZhangTeng:UpdateVersion:1.5.0'
     //使用的三方库
-    implementation 'com.github.DL-ZhangTeng:Utils:1.0.+'
+    implementation 'com.github.DL-ZhangTeng:Utils:2.0.+'
 ```
 ## 效果图
 ![无wifi](https://img-blog.csdnimg.cn/20200807172122393.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2R1b2x1bzk=,size_16,color_FFFFFF,t_70)
@@ -73,6 +73,7 @@ new UpdateVersion.Builder()
 ## 历史版本
 版本| 更新| 更新时间
 -------- | ----- | -----
+v1.5.0| 兼容分区存储|2022/9/16 at 16:23
 v1.4.0| 使用独立的Utils库|2022/9/2 at 20:43
 v1.3.0| 增加Https支持|2022/8/20 at 13:48
 v1.2.1| 使用utils新版本|2022/6/30 at 10:30
