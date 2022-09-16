@@ -1,99 +1,104 @@
-package com.zhangteng.updateversionlibrary.callback;
+package com.zhangteng.updateversion.callback
 
-import android.annotation.SuppressLint;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.widget.Toast;
-
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.FileProvider;
-
-import com.zhangteng.updateversionlibrary.R;
-import com.zhangteng.updateversionlibrary.UpdateVersion;
-import com.zhangteng.updateversionlibrary.config.Constant;
-import com.zhangteng.updateversionlibrary.dialog.CommonProgressDialog;
-
-import java.io.File;
+import android.annotation.SuppressLint
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.os.Handler
+import android.os.Message
+import android.util.Log
+import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.content.FileProvider
+import com.zhangteng.updateversion.R
+import com.zhangteng.updateversion.UpdateVersion
+import com.zhangteng.updateversion.config.Constant
+import com.zhangteng.updateversion.dialog.CommonProgressDialog
+import java.io.File
 
 /**
  * 下载任务进度监听
  *
  * @author swing 2018/5/11
  */
-public class DownloadCallback {
-    private Context mContext;
-    private static final int UPDATE_NOTIFICATION_PROGRESS = 0x1;
-    private static final int COMPLETE_DOWNLOAD_APK = 0x2;
-    private static final int DOWNLOAD_NOTIFICATION_ID = 0x3;
-    private long total;
-    private File apkFile = null;
-    private CommonProgressDialog progressDialog;
-    private NotificationManager notificationManager;
-    private NotificationCompat.Builder ntfBuilder;
+class DownloadCallback {
+    private var mContext: Context? = null
+    private var total: Long = 0
+    private var apkFile: File? = null
+    private var progressDialog: CommonProgressDialog? = null
+    private var notificationManager: NotificationManager? = null
+    private var ntfBuilder: NotificationCompat.Builder? = null
+
     @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case UPDATE_NOTIFICATION_PROGRESS:
-                    showDownloadNotificationUI(msg.arg1, msg.arg2);
-                    break;
-                case COMPLETE_DOWNLOAD_APK:
-                    if (UpdateVersion.isAutoInstall()) {
-                        installApk(apkFile);
+    private val handler: Handler = object : Handler() {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            when (msg.what) {
+                UPDATE_NOTIFICATION_PROGRESS -> showDownloadNotificationUI(msg.arg1, msg.arg2)
+                COMPLETE_DOWNLOAD_APK -> if (UpdateVersion.Companion.isAutoInstall()) {
+                    installApk(apkFile)
+                } else {
+                    ntfBuilder = NotificationCompat.Builder(mContext!!)
+                    ntfBuilder!!.setSmallIcon(mContext!!.applicationInfo.icon)
+                        .setContentTitle(Constant.cache[Constant.APP_NAME])
+                        .setContentText(
+                            if (mContext == null) "下载完成，点击安装" else mContext!!.getString(
+                                R.string.notification_content_finish
+                            )
+                        )
+                        .setTicker(if (mContext == null) "任务下载完成" else mContext!!.getString(R.string.notification_ticker_finish))
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    //判断是否是AndroidN以及更高的版本
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        intent.flags =
+                            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK
+                        val uri = UpdateVersion.provider?.let {
+                            FileProvider.getUriForFile(
+                                mContext!!,
+                                it,
+                                apkFile!!
+                            )
+                        }
+                        intent.setDataAndType(uri, "application/vnd.android.package-archive")
                     } else {
-                        ntfBuilder = new NotificationCompat.Builder(mContext);
-                        ntfBuilder.setSmallIcon(mContext.getApplicationInfo().icon)
-                                .setContentTitle(Constant.cache.get(Constant.APP_NAME))
-                                .setContentText(mContext == null ? "下载完成，点击安装" : mContext.getString(R.string.notification_content_finish))
-                                .setTicker(mContext == null ? "任务下载完成" : mContext.getString(R.string.notification_ticker_finish));
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        //判断是否是AndroidN以及更高的版本
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            Uri uri = FileProvider.getUriForFile(mContext, UpdateVersion.getProvider(), apkFile);
-                            intent.setDataAndType(uri, "application/vnd.android.package-archive");
-                        } else {
-                            intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        }
-                        PendingIntent pendingIntent = PendingIntent.getActivity(
-                                mContext, 0, intent, 0);
-                        ntfBuilder.setContentIntent(pendingIntent);
-                        if (notificationManager == null) {
-                            notificationManager = (NotificationManager) mContext
-                                    .getSystemService(Context.NOTIFICATION_SERVICE);
-                        }
-                        notificationManager.notify(DOWNLOAD_NOTIFICATION_ID,
-                                ntfBuilder.build());
+                        intent.setDataAndType(
+                            Uri.fromFile(apkFile),
+                            "application/vnd.android.package-archive"
+                        )
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     }
-                    break;
-                default:
-                    break;
+                    val pendingIntent = PendingIntent.getActivity(
+                        mContext, 0, intent, 0
+                    )
+                    ntfBuilder!!.setContentIntent(pendingIntent)
+                    if (notificationManager == null) {
+                        notificationManager =
+                            mContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    }
+                    notificationManager!!.notify(
+                        DOWNLOAD_NOTIFICATION_ID,
+                        ntfBuilder!!.build()
+                    )
+                }
+                else -> {}
             }
         }
-
-    };
+    }
 
     /**
      * 开始下载前的准备工作
      */
-    public void onPreExecute(Context context) {
-        this.mContext = context;
+    fun onPreExecute(context: Context?) {
+        mContext = context
         if (UpdateVersion.isProgressDialogShow()) {
-            progressDialog = new CommonProgressDialog(context, R.style.Translucent_Dialog);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage(mContext == null ? "正在下载更新" : mContext.getString(R.string.progress_message));
-            if (!UpdateVersion.isNotificationShow()) {
-                progressDialog.show();
+            progressDialog = CommonProgressDialog(context, R.style.Translucent_Dialog)
+            progressDialog!!.setCancelable(false)
+            progressDialog!!.setMessage(if (mContext == null) "正在下载更新" else mContext!!.getString(R.string.progress_message))
+            if (!UpdateVersion.isNotificationShow) {
+                progressDialog!!.show()
             }
         }
     }
@@ -101,39 +106,48 @@ public class DownloadCallback {
     /**
      * 下载完成后发送安装请求
      */
-    public void onPostExecute(Boolean flag) {
+    fun onPostExecute(flag: Boolean) {
         if (flag) {
             //下载成功执行安装步骤
-            if (!UpdateVersion.isNotificationShow()) {
-                handler.obtainMessage(COMPLETE_DOWNLOAD_APK).sendToTarget();
+            if (!UpdateVersion.isNotificationShow) {
+                handler.obtainMessage(COMPLETE_DOWNLOAD_APK).sendToTarget()
             }
         } else {
-            Log.e("Error", "下载失败。");
-            Toast.makeText(mContext, mContext == null ? "下载失败，请到应用商城或官网下载" : mContext.getString(R.string.download_failure), Toast.LENGTH_LONG).show();
+            Log.e("Error", "下载失败。")
+            Toast.makeText(
+                mContext,
+                if (mContext == null) "下载失败，请到应用商城或官网下载" else mContext!!.getString(R.string.download_failure),
+                Toast.LENGTH_LONG
+            ).show()
         }
         if (UpdateVersion.isProgressDialogShow()) {
-            progressDialog.dismiss();
+            progressDialog!!.dismiss()
         }
     }
 
     /**
      * 从背景任务中获取apk大小及下载完成后的文件对象
      */
-    public void doInBackground(long total, File apkFile) {
-        this.total = total;
-        this.apkFile = apkFile;
+    fun doInBackground(total: Long, apkFile: File?) {
+        this.total = total
+        this.apkFile = apkFile
     }
 
     /**
      * 下载进度监听
      */
-    public void onProgressUpdate(Integer... values) {
+    fun onProgressUpdate(vararg values: Int?) {
         if (UpdateVersion.isProgressDialogShow()) {
-            progressDialog.setMax((int) total);
-            progressDialog.setProgress(values[0]);
+            progressDialog?.max = total.toInt()
+            values[0]?.let {
+                progressDialog!!.setProgress(it)
+            }
         }
-        if (UpdateVersion.isNotificationShow()) {
-            handler.obtainMessage(UPDATE_NOTIFICATION_PROGRESS, values[0], (int) total).sendToTarget();
+        if (UpdateVersion.isNotificationShow) {
+            values[0]?.let {
+                handler.obtainMessage(UPDATE_NOTIFICATION_PROGRESS, it, total.toInt())
+                    .sendToTarget()
+            }
         }
     }
 
@@ -142,33 +156,39 @@ public class DownloadCallback {
      *
      * @param progress
      */
-    private void showDownloadNotificationUI(final int progress, int total) {
+    private fun showDownloadNotificationUI(progress: Int, total: Int) {
         if (mContext != null) {
-            int pro = progress * 100 / total;
-            String contentText = pro + "%";
-            PendingIntent contentIntent = PendingIntent.getActivity(mContext,
-                    0, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
+            val pro = progress * 100 / total
+            val contentText = "$pro%"
+            val contentIntent = PendingIntent.getActivity(
+                mContext,
+                0, Intent(), PendingIntent.FLAG_CANCEL_CURRENT
+            )
             if (notificationManager == null) {
-                notificationManager = (NotificationManager) mContext
-                        .getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager = mContext!!
+                    .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             }
             if (ntfBuilder == null) {
-                ntfBuilder = new NotificationCompat.Builder(mContext)
-                        .setSmallIcon(mContext.getApplicationInfo().icon)
-                        .setTicker(mContext == null ? "开始下载…" : mContext.getString(R.string.notification_ticker_start))
-                        .setContentTitle(mContext == null ? "更新" : mContext.getString(R.string.notification_ticker_start))
-                        .setContentIntent(contentIntent);
+                ntfBuilder = NotificationCompat.Builder(mContext!!)
+                    .setSmallIcon(mContext!!.applicationInfo.icon)
+                    .setTicker(if (mContext == null) "开始下载…" else mContext!!.getString(R.string.notification_ticker_start))
+                    .setContentTitle(if (mContext == null) "更新" else mContext!!.getString(R.string.notification_ticker_start))
+                    .setContentIntent(contentIntent)
             }
-            ntfBuilder.setContentText(contentText);
-            ntfBuilder.setProgress(total, progress, false);
-            notificationManager.notify(DOWNLOAD_NOTIFICATION_ID,
-                    ntfBuilder.build());
+            ntfBuilder!!.setContentText(contentText)
+            ntfBuilder!!.setProgress(total, progress, false)
+            notificationManager!!.notify(
+                DOWNLOAD_NOTIFICATION_ID,
+                ntfBuilder!!.build()
+            )
             if (total == progress) {
-                ntfBuilder.setProgress(0, 0, true);
-                notificationManager.notify(DOWNLOAD_NOTIFICATION_ID,
-                        ntfBuilder.build());
-                notificationManager.cancel(DOWNLOAD_NOTIFICATION_ID);
-                handler.obtainMessage(COMPLETE_DOWNLOAD_APK).sendToTarget();
+                ntfBuilder!!.setProgress(0, 0, true)
+                notificationManager!!.notify(
+                    DOWNLOAD_NOTIFICATION_ID,
+                    ntfBuilder!!.build()
+                )
+                notificationManager!!.cancel(DOWNLOAD_NOTIFICATION_ID)
+                handler.obtainMessage(COMPLETE_DOWNLOAD_APK).sendToTarget()
             }
         }
     }
@@ -178,26 +198,41 @@ public class DownloadCallback {
      *
      * @param apkFile 安装包文件
      */
-    private void installApk(File apkFile) {
+    private fun installApk(apkFile: File?) {
         if (mContext != null) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
+            val intent = Intent(Intent.ACTION_VIEW)
             //判断是否是AndroidN以及更高的版本
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
-                Uri uri = FileProvider.getUriForFile(mContext, UpdateVersion.getProvider(), apkFile);
-                intent.setDataAndType(uri, "application/vnd.android.package-archive");
+                intent.flags =
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK
+                val uri = UpdateVersion.provider?.let {
+                    FileProvider.getUriForFile(
+                        mContext!!,
+                        it,
+                        apkFile!!
+                    )
+                }
+                intent.setDataAndType(uri, "application/vnd.android.package-archive")
             } else {
-                intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setDataAndType(
+                    Uri.fromFile(apkFile),
+                    "application/vnd.android.package-archive"
+                )
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
-            mContext.startActivity(intent);
+            mContext!!.startActivity(intent)
             if (notificationManager != null) {
-                notificationManager.cancel(DOWNLOAD_NOTIFICATION_ID);
+                notificationManager!!.cancel(DOWNLOAD_NOTIFICATION_ID)
             }
         } else {
-            Log.e("NullPointerException", "The context must not be null.");
+            Log.e("NullPointerException", "The context must not be null.")
         }
-        this.apkFile = null;
+        this.apkFile = null
+    }
 
+    companion object {
+        private const val UPDATE_NOTIFICATION_PROGRESS = 0x1
+        private const val COMPLETE_DOWNLOAD_APK = 0x2
+        private const val DOWNLOAD_NOTIFICATION_ID = 0x3
     }
 }

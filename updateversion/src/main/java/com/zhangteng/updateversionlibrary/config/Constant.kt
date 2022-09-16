@@ -1,18 +1,15 @@
-package com.zhangteng.updateversionlibrary.config;
+package com.zhangteng.updateversion.config
 
-import android.os.Environment;
-
-import java.util.HashMap;
+import android.os.Environment
 
 /**
  * @author swing 2018/5/14
  */
-public class Constant {
-
-    public static String PATH = Environment
-            .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
-    public static final String SUFFIX = ".apk";
-    public static final String APK_PATH = "APK_PATH";
-    public static final String APP_NAME = "APP_NAME";
-    public static HashMap<String, String> cache = new HashMap<String, String>();
+object Constant {
+    var PATH: String = Environment
+        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
+    const val SUFFIX = ".apk"
+    const val APK_PATH = "APK_PATH"
+    const val APP_NAME = "APP_NAME"
+    var cache = HashMap<String?, String?>()
 }

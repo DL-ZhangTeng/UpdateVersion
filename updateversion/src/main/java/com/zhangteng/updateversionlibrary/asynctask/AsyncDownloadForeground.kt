@@ -1,132 +1,125 @@
-package com.zhangteng.updateversionlibrary.asynctask;
+package com.zhangteng.updateversion.asynctask
 
-import android.os.AsyncTask;
-
-import com.zhangteng.updateversionlibrary.UpdateVersion;
-import com.zhangteng.updateversionlibrary.config.Constant;
-import com.zhangteng.updateversionlibrary.entity.VersionEntity;
-import com.zhangteng.utils.SSLUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
+import android.os.AsyncTask
+import com.zhangteng.updateversion.UpdateVersion
+import com.zhangteng.updateversion.config.Constant
+import com.zhangteng.updateversion.entity.VersionEntity
+import com.zhangteng.utils.SSLUtils.UnSafeHostnameVerifier
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.MalformedURLException
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 /**
  * Created by swing on 2018/5/14.
  */
-public abstract class AsyncDownloadForeground extends AsyncTask<VersionEntity, Integer, Boolean> {
-    private long total;
-    private File apkFile = null;
+abstract class AsyncDownloadForeground : AsyncTask<VersionEntity?, Int?, Boolean>() {
+    private var total: Long = 0
+    private var apkFile: File? = null
 
     /**
      * 开始下载前的准备工作
      */
-    public abstract void doOnPreExecute();
+    abstract fun doOnPreExecute()
 
     /**
      * 下载完成后发送安装请求
      */
-    public abstract void doOnPostExecute(Boolean flag);
+    abstract fun doOnPostExecute(flag: Boolean)
 
     /**
      * 从背景任务中获取apk大小及下载完成后的文件对象
      */
-    public abstract void doDoInBackground(long total, File apkFile);
+    abstract fun doDoInBackground(total: Long, apkFile: File?)
 
     /**
      * 下载进度监听
      */
-    public abstract void doOnProgressUpdate(Integer... values);
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        doOnPreExecute();
+    abstract fun doOnProgressUpdate(vararg values: Int?)
+    override fun onPreExecute() {
+        super.onPreExecute()
+        doOnPreExecute()
     }
 
-    @Override
-    protected void onPostExecute(Boolean aBoolean) {
-        super.onPostExecute(aBoolean);
-        doOnPostExecute(aBoolean);
+    override fun onPostExecute(aBoolean: Boolean) {
+        super.onPostExecute(aBoolean)
+        doOnPostExecute(aBoolean)
     }
 
-    @Override
-    protected void onProgressUpdate(Integer... values) {
-        super.onProgressUpdate(values);
-        doOnProgressUpdate(values);
+    override fun onProgressUpdate(vararg values: Int?) {
+        super.onProgressUpdate(*values)
+        doOnProgressUpdate(*values)
     }
 
-    @Override
-    protected Boolean doInBackground(VersionEntity... params) {
-        URL url = null;
-        HttpURLConnection urlConnection = null;
+    override fun doInBackground(vararg params: VersionEntity?): Boolean? {
+        var url: URL? = null
+        var urlConnection: HttpURLConnection? = null
         try {
-            url = new URL(params[0].getUrl());
-            urlConnection = (HttpURLConnection) url.openConnection();
-            if (urlConnection instanceof HttpsURLConnection) {
-                ((HttpsURLConnection) urlConnection).setSSLSocketFactory(UpdateVersion.getSslParams().getSSLSocketFactory());
-                ((HttpsURLConnection) urlConnection).setHostnameVerifier(SSLUtils.INSTANCE.getUnSafeHostnameVerifier());
+            url = URL(params[0]?.url)
+            urlConnection = url.openConnection() as HttpURLConnection
+            if (urlConnection is HttpsURLConnection) {
+                urlConnection.sslSocketFactory =
+                    UpdateVersion.getSslParams()?.sSLSocketFactory
+                urlConnection.hostnameVerifier = UnSafeHostnameVerifier
             }
             // 2.2版本以上HttpURLConnection跟服务交互采用了"gzip"压缩，添加这行代码避免total = -1
-            urlConnection.setRequestProperty("Accept-Encoding", "identity");
+            urlConnection.setRequestProperty("Accept-Encoding", "identity")
             //设置超时间为3秒
-            urlConnection.setConnectTimeout(3 * 1000);
+            urlConnection.connectTimeout = 3 * 1000
             //防止屏蔽程序抓取而返回403错误
-            urlConnection.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-
-            if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                return false;
+            urlConnection.setRequestProperty(
+                "User-Agent",
+                "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)"
+            )
+            if (urlConnection.responseCode != HttpURLConnection.HTTP_OK) {
+                return false
             } else {
                 //得到输入流
-                InputStream inputStream = urlConnection.getInputStream();
-
-                total = urlConnection.getContentLength();
-                String apkName = params[0].getName()
-                        + params[0].getVersionNo() + Constant.SUFFIX;
-                Constant.cache.put(Constant.APP_NAME, params[0].getName());
-                Constant.cache.put(Constant.APK_PATH,
-                        Constant.PATH + File.separator + params[0].getName()
-                                + File.separator + apkName);
-
-                File savePath = new File(Constant.PATH + File.separator
-                        + params[0].getName());
-
+                val inputStream = urlConnection.inputStream
+                total = urlConnection.contentLength.toLong()
+                val apkName = (params[0]?.name
+                        + params[0]?.versionNo + Constant.SUFFIX)
+                Constant.cache[Constant.APP_NAME] = params[0]?.name
+                Constant.cache[Constant.APK_PATH] =
+                    (Constant.PATH + File.separator + params[0]?.name
+                            + File.separator + apkName)
+                val savePath = File(
+                    Constant.PATH + File.separator
+                            + params[0]?.name
+                )
                 if (!savePath.exists()) {
-                    savePath.mkdirs();
+                    savePath.mkdirs()
                 }
                 //6.0以上系统需要静态动态权限不然无法创建文件
-                apkFile = new File(savePath, apkName);
-                if (apkFile.exists()) {
-                    apkFile.delete();
+                apkFile = File(savePath, apkName)
+                if (apkFile!!.exists()) {
+                    apkFile!!.delete()
                     //return true;
                 }
-                doDoInBackground(total, apkFile);
-                FileOutputStream fos = new FileOutputStream(apkFile);
+                doDoInBackground(total, apkFile)
+                val fos = FileOutputStream(apkFile)
                 // FileOutputStream fos = mContext.openFileOutput(apkFile.getAbsolutePath().toString(),mContext.MODE_PRIVATE);
-                byte[] buf = new byte[1024];
-                int count = 0;
-                int length = -1;
-                while ((length = inputStream.read(buf)) != -1) {
-                    fos.write(buf, 0, length);
-                    count += length;
-                    publishProgress(count);
+                val buf = ByteArray(1024)
+                var count = 0
+                var length = -1
+                while (inputStream.read(buf).also { length = it } != -1) {
+                    fos.write(buf, 0, length)
+                    count += length
+                    publishProgress(count)
                 }
-                inputStream.close();
-                fos.close();
+                inputStream.close()
+                fos.close()
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-            doDoInBackground(total, apkFile);
-            return false;
+        } catch (e: MalformedURLException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            doDoInBackground(total, apkFile)
+            return false
         }
-        return true;
+        return true
     }
 }

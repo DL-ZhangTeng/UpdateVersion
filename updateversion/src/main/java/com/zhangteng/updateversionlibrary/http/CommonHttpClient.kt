@@ -1,75 +1,59 @@
-package com.zhangteng.updateversionlibrary.http;
+package com.zhangteng.updateversion.http
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import androidx.fragment.app.FragmentManager;
-
-import com.zhangteng.updateversionlibrary.asynctask.AsyncCheck;
-import com.zhangteng.updateversionlibrary.asynctask.AsyncDownloadForeground;
-import com.zhangteng.updateversionlibrary.callback.DownloadCallback;
-import com.zhangteng.updateversionlibrary.callback.VersionInfoCallback;
-import com.zhangteng.updateversionlibrary.entity.VersionEntity;
-
-import java.io.File;
+import android.annotation.SuppressLint
+import android.content.Context
+import androidx.fragment.app.FragmentManager
+import com.zhangteng.updateversion.asynctask.AsyncCheck
+import com.zhangteng.updateversion.asynctask.AsyncDownloadForeground
+import com.zhangteng.updateversion.callback.DownloadCallback
+import com.zhangteng.updateversion.callback.VersionInfoCallback
+import com.zhangteng.updateversion.entity.VersionEntity
+import java.io.File
 
 /**
  * Created by swing on 2018/5/14.
  */
-public class CommonHttpClient implements HttpClient {
-    private Context mContext;
-    private FragmentManager mFragmentManager;
+open class CommonHttpClient(
+    private val mContext: Context,
+    private val mFragmentManager: FragmentManager
+) : HttpClient {
+    @SuppressLint("StaticFieldLeak")
+    override fun getVersionInfo(versionInfoUrl: String?, versionInfoCallback: VersionInfoCallback) {
+        val asyncCheck: AsyncCheck = object : AsyncCheck() {
+            override fun doOnPreExecute() {
+                versionInfoCallback.onPreExecute(mContext, mFragmentManager, this@CommonHttpClient)
+            }
 
-    public CommonHttpClient(Context mContext, FragmentManager mFragmentManager) {
-        this.mContext = mContext;
-        this.mFragmentManager = mFragmentManager;
+            override fun doDoInBackground(versionEntity: VersionEntity?) {
+                versionInfoCallback.doInBackground(versionEntity)
+            }
+
+            override fun doOnPostExecute() {
+                versionInfoCallback.onPostExecute()
+            }
+        }
+        asyncCheck.execute(versionInfoUrl)
     }
 
     @SuppressLint("StaticFieldLeak")
-    @Override
-    public void getVersionInfo(String versionInfoUrl, final VersionInfoCallback versionInfoCallback) {
-        AsyncCheck asyncCheck = new AsyncCheck() {
-            @Override
-            public void doOnPreExecute() {
-                versionInfoCallback.onPreExecute(mContext, mFragmentManager, CommonHttpClient.this);
+    override fun downloadApk(versionEntity: VersionEntity?, downloadCallback: DownloadCallback) {
+        val asyncDownloadForeground: AsyncDownloadForeground = object : AsyncDownloadForeground() {
+            override fun doOnPreExecute() {
+                downloadCallback.onPreExecute(mContext)
             }
 
-            @Override
-            public void doDoInBackground(VersionEntity versionEntity) {
-                versionInfoCallback.doInBackground(versionEntity);
+            override fun doOnPostExecute(flag: Boolean) {
+                downloadCallback.onPostExecute(flag)
             }
 
-            @Override
-            public void doOnPostExecute() {
-                versionInfoCallback.onPostExecute();
-            }
-        };
-        asyncCheck.execute(versionInfoUrl);
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    @Override
-    public void downloadApk(VersionEntity versionEntity, final DownloadCallback downloadCallback) {
-        AsyncDownloadForeground asyncDownloadForeground = new AsyncDownloadForeground() {
-            @Override
-            public void doOnPreExecute() {
-                downloadCallback.onPreExecute(mContext);
+            override fun doDoInBackground(total: Long, apkFile: File?) {
+                downloadCallback.doInBackground(total, apkFile)
             }
 
-            @Override
-            public void doOnPostExecute(Boolean flag) {
-                downloadCallback.onPostExecute(flag);
+            override fun doOnProgressUpdate(vararg values: Int?) {
+                downloadCallback.onProgressUpdate(*values)
             }
-
-            @Override
-            public void doDoInBackground(long total, File apkFile) {
-                downloadCallback.doInBackground(total, apkFile);
-            }
-
-            @Override
-            public void doOnProgressUpdate(Integer... values) {
-                downloadCallback.onProgressUpdate(values);
-            }
-        };
-        asyncDownloadForeground.execute(versionEntity);
+        }
+        asyncDownloadForeground.execute(versionEntity)
     }
 }

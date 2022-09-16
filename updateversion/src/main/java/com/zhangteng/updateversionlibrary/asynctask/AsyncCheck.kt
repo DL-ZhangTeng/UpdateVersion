@@ -1,73 +1,70 @@
-package com.zhangteng.updateversionlibrary.asynctask;
+package com.zhangteng.updateversion.asynctask
 
-import android.os.AsyncTask;
-import android.util.Log;
-
-import com.zhangteng.updateversionlibrary.UpdateVersion;
-import com.zhangteng.updateversionlibrary.callback.VersionInfoCallback;
-import com.zhangteng.updateversionlibrary.entity.VersionEntity;
-import com.zhangteng.updateversionlibrary.utils.HttpRequest;
-import com.zhangteng.updateversionlibrary.utils.JSONHandler;
-import com.zhangteng.utils.URLUtilsKt;
+import android.os.AsyncTask
+import android.util.Log
+import com.zhangteng.updateversion.UpdateVersion
+import com.zhangteng.updateversion.callback.VersionInfoCallback
+import com.zhangteng.updateversion.entity.VersionEntity
+import com.zhangteng.updateversion.utils.HttpRequest
+import com.zhangteng.updateversion.utils.JSONHandler
+import com.zhangteng.utils.isNetworkUrl
 
 /**
  * Created by swing on 2018/5/14.
  */
-public abstract class AsyncCheck extends AsyncTask<String, Integer, VersionEntity> {
-
+abstract class AsyncCheck : AsyncTask<String?, Int?, VersionEntity?>() {
     /**
      * 准备执行
      */
-    public abstract void doOnPreExecute();
+    abstract fun doOnPreExecute()
 
     /**
      * 获取版本信息后执行
      *
      * @param versionEntity 版本信息
      */
-    public abstract void doDoInBackground(VersionEntity versionEntity);
+    abstract fun doDoInBackground(versionEntity: VersionEntity?)
 
     /**
      * 任务完成
      */
-    public abstract void doOnPostExecute();
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        doOnPreExecute();
+    abstract fun doOnPostExecute()
+    override fun onPreExecute() {
+        super.onPreExecute()
+        doOnPreExecute()
     }
 
-    @Override
-    protected VersionEntity doInBackground(String... params) {
-        VersionEntity versionEntity = null;
-        if (params.length == 0) {
-            Log.e("NullPointerException",
-                    " Url parameter must not be null.");
-            return null;
+    override fun doInBackground(vararg params: String?): VersionEntity? {
+        var versionEntity: VersionEntity? = null
+        if (params.isEmpty()) {
+            Log.e(
+                "NullPointerException",
+                " Url parameter must not be null."
+            )
+            return null
         }
-        String url = params[0];
-        if (!URLUtilsKt.isNetworkUrl(url)) {
-            return null;
+        val url = params[0]
+        if (!url.isNetworkUrl()) {
+            return null
         }
         try {
-            if (UpdateVersion.isUpdateTest()) {
-                versionEntity = JSONHandler.toVersionEntity(VersionInfoCallback.nativeAssertGet("versionInfo.json"));
+            if (UpdateVersion.isUpdateTest) {
+                versionEntity =
+                    JSONHandler.toVersionEntity(VersionInfoCallback.Companion.nativeAssertGet("versionInfo.json"))
             } else {
                 if (HttpRequest.get(url) != null) {
-                    versionEntity = JSONHandler.toVersionEntity(HttpRequest.get(url));
+                    versionEntity = JSONHandler.toVersionEntity(HttpRequest.get(url))
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        doDoInBackground(versionEntity);
-        return versionEntity;
+        doDoInBackground(versionEntity)
+        return versionEntity
     }
 
-    @Override
-    protected void onPostExecute(VersionEntity versionEntity) {
-        super.onPostExecute(versionEntity);
-        doOnPostExecute();
+    override fun onPostExecute(versionEntity: VersionEntity?) {
+        super.onPostExecute(versionEntity)
+        doOnPostExecute()
     }
 }

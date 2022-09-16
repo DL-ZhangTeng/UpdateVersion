@@ -1,167 +1,166 @@
-package com.zhangteng.updateversionlibrary.dialog;
+package com.zhangteng.updateversion.dialog
+
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.Context
+import android.graphics.Paint
+import android.graphics.Typeface
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RoundRectShape
+import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
+import android.widget.ProgressBar
+import android.widget.TextView
+import com.zhangteng.updateversion.R
+import com.zhangteng.updateversion.UpdateVersion
+import java.text.NumberFormat
 
 /**
  * Created by swing on 2017/5/3.
  */
+class CommonProgressDialog : AlertDialog {
+    private var mProgress: ProgressBar? = null
+    private var mProgressNumber: TextView? = null
+    private var mProgressPercent: TextView? = null
+    private var mProgressMessage: TextView? = null
+    private var mMax = 0
+    private var mMessage: CharSequence? = null
+    private var mHasStarted = false
+    private var mProgressVal = 0
+    private var mProgressNumberFormat: String? = null
+    private var mProgressPercentFormat: NumberFormat? = null
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.graphics.Paint;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RoundRectShape;
-import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.StyleSpan;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
-import com.zhangteng.updateversionlibrary.R;
-import com.zhangteng.updateversionlibrary.UpdateVersion;
-
-import java.text.NumberFormat;
-
-
-public class CommonProgressDialog extends AlertDialog {
-    private ProgressBar mProgress;
-    private TextView mProgressNumber;
-    private TextView mProgressPercent;
-    private TextView mProgressMessage;
-    private int mMax;
-    private CharSequence mMessage;
-    private boolean mHasStarted;
-    private int mProgressVal;
-    private String mProgressNumberFormat;
-    private NumberFormat mProgressPercentFormat;
-
-    public CommonProgressDialog(Context context) {
-        super(context);
-        initFormats();
+    constructor(context: Context?) : super(context) {
+        initFormats()
     }
 
-    public CommonProgressDialog(Context context, int theme) {
-        super(context, theme);
-        initFormats();
+    constructor(context: Context?, theme: Int) : super(context, theme) {
+        initFormats()
     }
 
-    @SuppressLint({"HandlerLeak", "UseCompatLoadingForDrawables"})
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.common_progress_dialog);
-        mProgress = findViewById(R.id.progress);
-        if (UpdateVersion.getProgressDrawable() != R.drawable.progressbar) {
-            mProgress.setProgressDrawable(getContext().getDrawable(UpdateVersion.getProgressDrawable()));
+    @SuppressLint("HandlerLeak", "UseCompatLoadingForDrawables")
+    override fun onCreate(savedInstanceState: Bundle) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.common_progress_dialog)
+        mProgress = findViewById(R.id.progress)
+        if (UpdateVersion.progressDrawable != R.drawable.progressbar) {
+            mProgress?.progressDrawable = context.getDrawable(UpdateVersion.progressDrawable)
         }
-        mProgressNumber = findViewById(R.id.progress_number);
-        mProgressPercent = findViewById(R.id.progress_percent);
-        mProgressMessage = findViewById(R.id.progress_message);
-        if (UpdateVersion.getThemeColor() != R.color.version_theme_color) {
-            mProgressMessage.setBackground(getTitleBackgroundDrawable());
+        mProgressNumber = findViewById(R.id.progress_number)
+        mProgressPercent = findViewById(R.id.progress_percent)
+        mProgressMessage = findViewById(R.id.progress_message)
+        if (UpdateVersion.themeColor != R.color.version_theme_color) {
+            mProgressMessage?.background = titleBackgroundDrawable
         }
-        onProgressChanged();
+        onProgressChanged()
         if (mMessage != null) {
-            setMessage(mMessage);
+            setMessage(mMessage!!)
         }
         if (mMax > 0) {
-            setMax(mMax);
+            max = mMax
         }
         if (mProgressVal > 0) {
-            setProgress(mProgressVal);
+            setProgress(mProgressVal)
         }
     }
 
-    private void initFormats() {
-        mProgressNumberFormat = "%1.2fM/%2.2fM";
-        mProgressPercentFormat = NumberFormat.getPercentInstance();
-        mProgressPercentFormat.setMaximumFractionDigits(0);
+    private fun initFormats() {
+        mProgressNumberFormat = "%1.2fM/%2.2fM"
+        mProgressPercentFormat = NumberFormat.getPercentInstance()
+        mProgressPercentFormat?.maximumFractionDigits = 0
     }
 
-    private void onProgressChanged() {
-        int progress = mProgress.getProgress();
-        int max = mProgress.getMax();
-        double dProgress = (double) progress / (double) (1024 * 1024);
-        double dMax = (double) max / (double) (1024 * 1024);
+    private fun onProgressChanged() {
+        val progress = mProgress!!.progress
+        val max = mProgress!!.max
+        val dProgress = progress.toDouble() / (1024 * 1024).toDouble()
+        val dMax = max.toDouble() / (1024 * 1024).toDouble()
         if (mProgressNumberFormat != null) {
-            String format = mProgressNumberFormat;
-            mProgressNumber.setText(String.format(format, dProgress, dMax));
+            val format: String = mProgressNumberFormat!!
+            mProgressNumber!!.text = String.format(format, dProgress, dMax)
         } else {
-            mProgressNumber.setText("");
+            mProgressNumber!!.text = ""
         }
         if (mProgressPercentFormat != null) {
-            double percent = 0;
+            var percent = 0.0
             if (max >= 0) {
-                percent = (double) progress / (double) max;
+                percent = progress.toDouble() / max.toDouble()
             }
-            SpannableString tmp = new SpannableString(mProgressPercentFormat.format(percent));
-            if (0 < tmp.length()) {
-                tmp.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
-                        0, tmp.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            val tmp = SpannableString(mProgressPercentFormat!!.format(percent))
+            if (0 < tmp.length) {
+                tmp.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    0, tmp.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             }
-            mProgressPercent.setText(tmp);
+            mProgressPercent!!.text = tmp
         } else {
-            mProgressPercent.setText("");
+            mProgressPercent!!.text = ""
         }
     }
 
-    public int getMax() {
-        if (mProgress != null) {
-            return mProgress.getMax();
+    var max: Int
+        get() = if (mProgress != null) {
+            mProgress!!.max
+        } else mMax
+        set(max) {
+            if (mProgress != null) {
+                mProgress!!.max = max
+                onProgressChanged()
+            } else {
+                mMax = max
+            }
         }
-        return mMax;
-    }
 
-    public void setMax(int max) {
-        if (mProgress != null) {
-            mProgress.setMax(max);
-            onProgressChanged();
-        } else {
-            mMax = max;
-        }
-    }
-
-    public void setProgress(int value) {
+    fun setProgress(value: Int) {
         if (mHasStarted) {
-            mProgress.setProgress(value);
-            onProgressChanged();
+            mProgress!!.progress = value
+            onProgressChanged()
         } else {
-            mProgressVal = value;
+            mProgressVal = value
         }
     }
 
-    @Override
-    public void setMessage(CharSequence message) {
+    override fun setMessage(message: CharSequence) {
         if (mProgressMessage != null) {
-            mProgressMessage.setText(message);
+            mProgressMessage!!.text = message
         } else {
-            mMessage = message;
+            mMessage = message
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mHasStarted = true;
+    override fun onStart() {
+        super.onStart()
+        mHasStarted = true
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mHasStarted = false;
+    override fun onStop() {
+        super.onStop()
+        mHasStarted = false
     }
 
-    private ShapeDrawable getTitleBackgroundDrawable() {
-
-        int radius0 = getContext().getResources().getDimensionPixelSize(R.dimen.dialog_radius);
-        float[] outerR = new float[]{radius0, radius0, radius0, radius0, 0, 0, 0, 0};
-        RoundRectShape roundRectShape0 = new RoundRectShape(outerR, null, null);
-
-        ShapeDrawable background = new ShapeDrawable();
-        background.setPadding(0, 0, 0, 0);
-        background.setShape(roundRectShape0);
-        background.getPaint().setStyle(Paint.Style.FILL);
-        background.getPaint().setColor(getContext().getResources().getColor(UpdateVersion.getThemeColor()));
-        return background;
-    }
+    private val titleBackgroundDrawable: ShapeDrawable
+        get() {
+            val radius0 = context.resources.getDimensionPixelSize(R.dimen.dialog_radius)
+            val outerR = floatArrayOf(
+                radius0.toFloat(),
+                radius0.toFloat(),
+                radius0.toFloat(),
+                radius0.toFloat(),
+                0f,
+                0f,
+                0f,
+                0f
+            )
+            val roundRectShape0 = RoundRectShape(outerR, null, null)
+            val background = ShapeDrawable()
+            background.setPadding(0, 0, 0, 0)
+            background.shape = roundRectShape0
+            background.paint.style = Paint.Style.FILL
+            background.paint.color =
+                context.resources.getColor(UpdateVersion.themeColor)
+            return background
+        }
 }

@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">UpdateVersionLibrary</string>
-
     <string name="version_hint">当前已是最新版</string>
 
     <string name="version_title">发现新版本%s</string>

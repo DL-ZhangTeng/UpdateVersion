@@ -1,46 +1,42 @@
-package com.zhangteng.updateversionlibrary.utils;
+package com.zhangteng.updateversion.utils
 
-import android.util.Log;
-
-import com.zhangteng.updateversionlibrary.UpdateVersion;
-import com.zhangteng.utils.SSLUtils;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
+import android.util.Log
+import com.zhangteng.updateversion.UpdateVersion
+import com.zhangteng.utils.SSLUtils.UnSafeHostnameVerifier
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.SocketTimeoutException
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 /**
  * @author swing
  */
-public class HttpRequest {
-
-    public static InputStream get(String url) {
-        try {
-            URL urlPath = new URL(url);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) urlPath.openConnection();
-            if (httpURLConnection instanceof HttpsURLConnection) {
-                ((HttpsURLConnection) httpURLConnection).setSSLSocketFactory(UpdateVersion.getSslParams().getSSLSocketFactory());
-                ((HttpsURLConnection) httpURLConnection).setHostnameVerifier(SSLUtils.INSTANCE.getUnSafeHostnameVerifier());
+object HttpRequest {
+    operator fun get(url: String?): InputStream? {
+        return try {
+            val urlPath = URL(url)
+            val httpURLConnection = urlPath.openConnection() as HttpURLConnection
+            if (httpURLConnection is HttpsURLConnection) {
+                httpURLConnection.sslSocketFactory =
+                    UpdateVersion.getSslParams()?.sSLSocketFactory
+                httpURLConnection.hostnameVerifier = UnSafeHostnameVerifier
             }
-            httpURLConnection.setConnectTimeout(3000);
-            httpURLConnection.setReadTimeout(3000);
-
-            httpURLConnection.connect();
-            InputStream inputStream = null;
-            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                inputStream = httpURLConnection.getInputStream();
+            httpURLConnection.connectTimeout = 3000
+            httpURLConnection.readTimeout = 3000
+            httpURLConnection.connect()
+            var inputStream: InputStream? = null
+            if (httpURLConnection.responseCode == HttpURLConnection.HTTP_OK) {
+                inputStream = httpURLConnection.inputStream
             }
-            return inputStream;
-        } catch (SocketTimeoutException e) {
-            e.printStackTrace();
-            return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("TimeOut", "the connection is timeout, maybe the server was closed.");
-            return null;
+            inputStream
+        } catch (e: SocketTimeoutException) {
+            e.printStackTrace()
+            null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("TimeOut", "the connection is timeout, maybe the server was closed.")
+            null
         }
     }
 }
