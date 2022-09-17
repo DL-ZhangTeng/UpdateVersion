@@ -26,87 +26,12 @@ class CommonProgressDialog(context: Context?, theme: Int) : AlertDialog(context,
     private var mProgressNumber: TextView? = null
     private var mProgressPercent: TextView? = null
     private var mProgressMessage: TextView? = null
+    private var mHasStarted = false
     private var mMax = 0L
     private var mMessage: CharSequence? = null
     private var mProgressVal = 0L
     private var mProgressNumberFormat: String? = null
     private var mProgressPercentFormat: NumberFormat? = null
-
-    @SuppressLint("HandlerLeak", "UseCompatLoadingForDrawables")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.common_progress_dialog)
-        mProgress = findViewById(R.id.progress)
-        if (UpdateVersion.progressDrawable != R.drawable.progressbar) {
-            mProgress?.progressDrawable = context.getDrawable(UpdateVersion.progressDrawable)
-        }
-        mProgressNumber = findViewById(R.id.progress_number)
-        mProgressPercent = findViewById(R.id.progress_percent)
-        mProgressMessage = findViewById(R.id.progress_message)
-        if (UpdateVersion.themeColor != R.color.version_theme_color) {
-            mProgressMessage?.background = titleBackgroundDrawable
-        }
-        if (mMessage != null) {
-            setMessage(mMessage!!)
-        }
-        initFormats()
-        onProgressChanged()
-    }
-
-    private fun initFormats() {
-        mProgressNumberFormat = "%1.2fM/%2.2fM"
-        mProgressPercentFormat = NumberFormat.getPercentInstance()
-        mProgressPercentFormat?.maximumFractionDigits = 0
-    }
-
-    private fun onProgressChanged() {
-        val dProgress = mProgressVal.toDouble() / (1024 * 1024).toDouble()
-        val dMax = mMax.toDouble() / (1024 * 1024).toDouble()
-        if (mProgressNumberFormat != null) {
-            val format: String = mProgressNumberFormat!!
-            mProgressNumber!!.text = String.format(format, dProgress, dMax)
-        } else {
-            mProgressNumber!!.text = ""
-        }
-        if (mProgressPercentFormat != null) {
-            var percent = 0.0
-            if (mMax > 0) {
-                percent = mProgressVal.toDouble() / mMax.toDouble()
-            }
-            val tmp = SpannableString(mProgressPercentFormat!!.format(percent))
-            if (tmp.isNotEmpty()) {
-                tmp.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    0, tmp.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-            mProgressPercent!!.text = tmp
-        } else {
-            mProgressPercent!!.text = ""
-        }
-    }
-
-    fun setMax(max: Long?) {
-        mMax = (max ?: PROGRESS_MAX) as Long
-
-        mProgress?.max = PROGRESS_MAX
-        onProgressChanged()
-    }
-
-    fun setProgress(value: Long) {
-        mProgressVal = value
-
-        mProgress?.progress = (value * PROGRESS_MAX / mMax).toInt()
-        onProgressChanged()
-    }
-
-    override fun setMessage(message: CharSequence) {
-        if (mProgressMessage != null) {
-            mProgressMessage!!.text = message
-        } else {
-            mMessage = message
-        }
-    }
 
     @Suppress("DEPRECATION")
     private val titleBackgroundDrawable: ShapeDrawable
@@ -130,4 +55,92 @@ class CommonProgressDialog(context: Context?, theme: Int) : AlertDialog(context,
             background.paint.color = context.resources.getColor(UpdateVersion.themeColor)
             return background
         }
+
+    @SuppressLint("HandlerLeak", "UseCompatLoadingForDrawables")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.common_progress_dialog)
+        mProgress = findViewById(R.id.progress)
+        if (UpdateVersion.progressDrawable != R.drawable.progressbar) {
+            mProgress?.progressDrawable = context.getDrawable(UpdateVersion.progressDrawable)
+        }
+        mProgressNumber = findViewById(R.id.progress_number)
+        mProgressPercent = findViewById(R.id.progress_percent)
+        mProgressMessage = findViewById(R.id.progress_message)
+        if (UpdateVersion.themeColor != R.color.version_theme_color) {
+            mProgressMessage?.background = titleBackgroundDrawable
+        }
+        if (mMessage != null) {
+            setMessage(mMessage!!)
+        }
+        initFormats()
+        onProgressChanged()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mHasStarted = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mHasStarted = false
+    }
+
+    override fun setMessage(message: CharSequence) {
+        if (mProgressMessage != null) {
+            mProgressMessage?.text = message
+        } else {
+            mMessage = message
+        }
+    }
+
+    private fun onProgressChanged() {
+        val dProgress = mProgressVal.toDouble() / (1024 * 1024).toDouble()
+        val dMax = mMax.toDouble() / (1024 * 1024).toDouble()
+        if (mProgressNumberFormat != null) {
+            val format: String = mProgressNumberFormat!!
+            mProgressNumber?.text = String.format(format, dProgress, dMax)
+        } else {
+            mProgressNumber?.text = ""
+        }
+        if (mProgressPercentFormat != null) {
+            var percent = 0.0
+            if (mMax > 0) {
+                percent = mProgressVal.toDouble() / mMax.toDouble()
+            }
+            val tmp = SpannableString(mProgressPercentFormat!!.format(percent))
+            if (tmp.isNotEmpty()) {
+                tmp.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    0, tmp.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            mProgressPercent?.text = tmp
+        } else {
+            mProgressPercent?.text = ""
+        }
+    }
+
+    fun setMax(max: Long?) {
+        mMax = (max ?: PROGRESS_MAX) as Long
+
+        if (!mHasStarted) return
+        mProgress?.max = PROGRESS_MAX
+        onProgressChanged()
+    }
+
+    fun setProgress(value: Long) {
+        mProgressVal = value
+
+        if (!mHasStarted) return
+        mProgress?.progress = (value * PROGRESS_MAX / mMax).toInt()
+        onProgressChanged()
+    }
+
+    private fun initFormats() {
+        mProgressNumberFormat = "%1.2fM/%2.2fM"
+        mProgressPercentFormat = NumberFormat.getPercentInstance()
+        mProgressPercentFormat?.maximumFractionDigits = 0
+    }
 }
