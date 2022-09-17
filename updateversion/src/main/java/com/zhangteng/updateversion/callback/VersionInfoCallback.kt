@@ -1,16 +1,18 @@
 package com.zhangteng.updateversion.callback
 
 import android.annotation.SuppressLint
-import android.app.DialogFragment
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
 import com.zhangteng.updateversion.R
 import com.zhangteng.updateversion.UpdateVersion
 import com.zhangteng.updateversion.dialog.UpdateDialogFragment
@@ -18,6 +20,7 @@ import com.zhangteng.updateversion.entity.VersionEntity
 import com.zhangteng.updateversion.http.HttpClient
 import com.zhangteng.utils.NetType
 import com.zhangteng.utils.getConnectedType
+import com.zhangteng.utils.i
 import java.io.InputStream
 
 /**
@@ -25,7 +28,6 @@ import java.io.InputStream
  */
 open class VersionInfoCallback {
     private var versionEntity: VersionEntity? = null
-    private var mFragmentManager: FragmentManager? = null
     private var httpClient: HttpClient? = null
 
     /**
@@ -33,11 +35,9 @@ open class VersionInfoCallback {
      */
     fun onPreExecute(
         context: Context?,
-        fragmentManager: FragmentManager?,
         httpClient: HttpClient?
     ) {
         mContext = context
-        mFragmentManager = fragmentManager
         this.httpClient = httpClient
     }
 
@@ -51,13 +51,19 @@ open class VersionInfoCallback {
     /**
      * 请求完成后进行下载请求
      */
+    @Suppress("DEPRECATION")
     fun onPostExecute() {
         if (mContext != null && versionEntity != null) {
-            Log.i(
-                "auto update",
-                "versionEntity versioncode: " + versionEntity!!.versionNo + " package versioncode: " + packageInfo!!.versionCode
+            val versionCode: Long =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    packageInfo!!.longVersionCode
+                } else {
+                    packageInfo!!.versionCode.toLong()
+                }
+            "versionEntity versioncode: ${versionEntity!!.versionNo} package versioncode: $versionCode".i(
+                "auto update"
             )
-            if (versionEntity!!.versionCode > packageInfo!!.versionCode) {
+            if (versionEntity!!.versionCode > versionCode) {
                 if (versionEntity!!.forceUpdate != 0) {
                     UpdateVersion.isAutoInstall = true
                     UpdateVersion.isProgressDialogShow = true
@@ -173,7 +179,7 @@ open class VersionInfoCallback {
                 }
             })
         try {
-            dialogFragment.show(mFragmentManager!!, "")
+            dialogFragment.show(findActivity(mContext!!)!!.supportFragmentManager, "")
         } catch (e: IllegalStateException) {
             Log.e("UpdateDialogFragment", e.message!!)
         }
@@ -208,9 +214,21 @@ open class VersionInfoCallback {
                 }
             })
         try {
-            dialogFragment.show(mFragmentManager!!, "")
+            dialogFragment.show(findActivity(mContext!!)!!.supportFragmentManager, "")
         } catch (e: IllegalStateException) {
             Log.e("UpdateDialogFragment", e.message!!)
+        }
+    }
+
+    fun findActivity(context: Context?): FragmentActivity? {
+        if (context is FragmentActivity) {
+            return context
+        }
+        return if (context is ContextWrapper) {
+            val wrapper = context as ContextWrapper?
+            findActivity(wrapper?.baseContext)
+        } else {
+            null
         }
     }
 

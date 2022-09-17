@@ -2,7 +2,6 @@ package com.zhangteng.updateversion.http
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.fragment.app.FragmentManager
 import com.zhangteng.updateversion.asynctask.AsyncCheck
 import com.zhangteng.updateversion.asynctask.AsyncDownloadForeground
 import com.zhangteng.updateversion.callback.DownloadCallback
@@ -14,10 +13,7 @@ import java.io.File
 /**
  * Created by swing on 2018/5/14.
  */
-open class CommonHttpClient(
-    private val mContext: Context,
-    private val mFragmentManager: FragmentManager
-) : HttpClient {
+open class CommonHttpClient(private val mContext: Context) : HttpClient {
     @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("StaticFieldLeak")
     override fun getVersionInfo(versionInfoUrl: String?, versionInfoCallback: VersionInfoCallback) {
@@ -25,7 +21,6 @@ open class CommonHttpClient(
             override fun doOnPreExecute() {
                 versionInfoCallback.onPreExecute(
                     mContext,
-                    mFragmentManager,
                     this@CommonHttpClient
                 )
             }

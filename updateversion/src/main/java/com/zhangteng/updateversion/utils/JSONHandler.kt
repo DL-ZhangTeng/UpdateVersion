@@ -26,7 +26,7 @@ object JSONHandler {
         versionEntity.name = jsonObject.getString("name")
         versionEntity.appId = jsonObject.getString("appId")
         versionEntity.versionNo = jsonObject.getString("versionNo")
-        versionEntity.versionCode = jsonObject.getInt("versionCode")
+        versionEntity.versionCode = jsonObject.getLong("versionCode")
         versionEntity.updateDesc = jsonObject.getString("title")
         versionEntity.updateDesc = jsonObject.getString("updateDesc")
         versionEntity.forceUpdate = jsonObject.getInt("forceUpdate")

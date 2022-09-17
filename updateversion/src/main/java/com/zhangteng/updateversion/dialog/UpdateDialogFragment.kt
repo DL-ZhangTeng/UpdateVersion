@@ -50,6 +50,7 @@ class UpdateDialogFragment : DialogFragment(), View.OnClickListener {
         mCancel?.setOnClickListener(this)
         mOk = view.findViewById(R.id.dialog_ok)
         if (UpdateVersion.themeColor != R.color.version_theme_color) {
+            @Suppress("DEPRECATION")
             mOk?.setTextColor(resources.getColor(UpdateVersion.themeColor))
         }
         mOk?.setOnClickListener(this)

@@ -20,7 +20,7 @@ import java.text.NumberFormat
 /**
  * Created by swing on 2017/5/3.
  */
-class CommonProgressDialog : AlertDialog {
+class CommonProgressDialog(context: Context?, theme: Int) : AlertDialog(context, theme) {
     private var mProgress: ProgressBar? = null
     private var mProgressNumber: TextView? = null
     private var mProgressPercent: TextView? = null
@@ -31,14 +31,6 @@ class CommonProgressDialog : AlertDialog {
     private var mProgressVal = 0
     private var mProgressNumberFormat: String? = null
     private var mProgressPercentFormat: NumberFormat? = null
-
-    constructor(context: Context?) : super(context) {
-        initFormats()
-    }
-
-    constructor(context: Context?, theme: Int) : super(context, theme) {
-        initFormats()
-    }
 
     @SuppressLint("HandlerLeak", "UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +81,7 @@ class CommonProgressDialog : AlertDialog {
                 percent = progress.toDouble() / max.toDouble()
             }
             val tmp = SpannableString(mProgressPercentFormat!!.format(percent))
-            if (0 < tmp.length) {
+            if (tmp.isNotEmpty()) {
                 tmp.setSpan(
                     StyleSpan(Typeface.BOLD),
                     0, tmp.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -141,6 +133,7 @@ class CommonProgressDialog : AlertDialog {
         mHasStarted = false
     }
 
+    @Suppress("DEPRECATION")
     private val titleBackgroundDrawable: ShapeDrawable
         get() {
             val radius0 = context.resources.getDimensionPixelSize(R.dimen.dialog_radius)
@@ -159,8 +152,11 @@ class CommonProgressDialog : AlertDialog {
             background.setPadding(0, 0, 0, 0)
             background.shape = roundRectShape0
             background.paint.style = Paint.Style.FILL
-            background.paint.color =
-                context.resources.getColor(UpdateVersion.themeColor)
+            background.paint.color = context.resources.getColor(UpdateVersion.themeColor)
             return background
         }
+
+    init {
+        initFormats()
+    }
 }

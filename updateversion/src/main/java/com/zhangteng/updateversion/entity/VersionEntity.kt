@@ -28,7 +28,7 @@ class VersionEntity {
     /**
      * 版本code
      */
-    var versionCode = 0
+    var versionCode = 0L
 
     /**
      * 下载地址

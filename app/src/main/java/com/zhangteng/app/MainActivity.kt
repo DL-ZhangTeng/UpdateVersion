@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
             .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
             .build()
             //执行更新任务
-            .updateVersion(CommonHttpClient(this, this.supportFragmentManager))
+            .updateVersion(CommonHttpClient(this))
     }
 
     fun onClick2(view: View?) {
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
             .build()
             //执行更新任务
-            .updateVersion(CommonHttpClient(this, this.supportFragmentManager))
+            .updateVersion(CommonHttpClient(this))
     }
 
     fun onClick3(view: View?) {
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
             .build()
             //执行更新任务
-            .updateVersion(CommonHttpClient(this, this.supportFragmentManager))
+            .updateVersion(CommonHttpClient(this))
     }
 
     fun onClick4(view: View?) {
@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity() {
             .setUploadImage(R.mipmap.upload_version_nonet)
             .build()
             //执行更新任务
-            .updateVersion(CommonHttpClient(this, this.supportFragmentManager))
+            .updateVersion(CommonHttpClient(this))
     }
 
     fun onClick5(view: View?) {
@@ -165,14 +165,13 @@ class MainActivity : AppCompatActivity() {
             .setProgressDrawable(R.drawable.progressbar_self)
             .build()
             //执行更新任务
-            .updateVersion(object : CommonHttpClient(this, supportFragmentManager) {
+            .updateVersion(object : CommonHttpClient(this) {
                 override fun getVersionInfo(
                     versionInfoUrl: String?,
                     versionInfoCallback: VersionInfoCallback
                 ) {
                     versionInfoCallback.onPreExecute(
                         this@MainActivity,
-                        supportFragmentManager,
                         this
                     )
                     updateVersion(versionInfoCallback)

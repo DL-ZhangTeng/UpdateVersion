@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.util.Log
 import android.widget.Toast
@@ -32,8 +33,8 @@ class DownloadCallback {
     private var notificationManager: NotificationManager? = null
     private var ntfBuilder: NotificationCompat.Builder? = null
 
-    @SuppressLint("HandlerLeak")
-    private val handler: Handler = object : Handler() {
+    private val handler: Handler = object : Handler(Looper.getMainLooper()) {
+        @SuppressLint("UnspecifiedImmutableFlag")
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             when (msg.what) {
@@ -41,7 +42,7 @@ class DownloadCallback {
                 COMPLETE_DOWNLOAD_APK -> if (UpdateVersion.isAutoInstall) {
                     installApk(apkFile)
                 } else {
-                    ntfBuilder = NotificationCompat.Builder(mContext!!)
+                    ntfBuilder = NotificationCompat.Builder(mContext!!, "版本更新")
                     ntfBuilder?.setSmallIcon(mContext!!.applicationInfo.icon)
                         ?.setContentTitle(Constant.cache[Constant.APP_NAME])
                         ?.setContentText(
@@ -156,6 +157,7 @@ class DownloadCallback {
      *
      * @param progress
      */
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun showDownloadNotificationUI(progress: Int, total: Int) {
         if (mContext != null) {
             val pro = progress * 100 / total
@@ -169,7 +171,7 @@ class DownloadCallback {
                     .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             }
             if (ntfBuilder == null) {
-                ntfBuilder = NotificationCompat.Builder(mContext!!)
+                ntfBuilder = NotificationCompat.Builder(mContext!!, "版本更新")
                     .setSmallIcon(mContext!!.applicationInfo.icon)
                     .setTicker(if (mContext == null) "开始下载…" else mContext!!.getString(R.string.notification_ticker_start))
                     .setContentTitle(if (mContext == null) "更新" else mContext!!.getString(R.string.notification_ticker_start))
