@@ -53,7 +53,7 @@ abstract class AsyncDownloadForeground : AsyncTask<VersionEntity, Int, Boolean>(
             urlConnection = url.openConnection() as HttpURLConnection
             if (urlConnection is HttpsURLConnection) {
                 urlConnection.sslSocketFactory =
-                    UpdateVersion.getSslParams()?.sSLSocketFactory
+                    UpdateVersion.sslParams?.sSLSocketFactory
                 urlConnection.hostnameVerifier = UnSafeHostnameVerifier
             }
             // 2.2版本以上HttpURLConnection跟服务交互采用了"gzip"压缩，添加这行代码避免total = -1
