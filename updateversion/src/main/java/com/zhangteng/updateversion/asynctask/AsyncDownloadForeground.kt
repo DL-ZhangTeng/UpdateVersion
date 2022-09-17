@@ -17,7 +17,7 @@ import javax.net.ssl.HttpsURLConnection
 /**
  * Created by swing on 2018/5/14.
  */
-abstract class AsyncDownloadForeground : AsyncTask<VersionEntity, Int, Boolean>() {
+abstract class AsyncDownloadForeground : AsyncTask<VersionEntity, Long, Boolean>() {
     private var total: Long = 0
     private var apkFile: File? = null
 
@@ -39,7 +39,7 @@ abstract class AsyncDownloadForeground : AsyncTask<VersionEntity, Int, Boolean>(
     /**
      * 下载进度监听
      */
-    abstract fun doOnProgressUpdate(vararg values: Int?)
+    abstract fun doOnProgressUpdate(vararg values: Long?)
 
     override fun onPreExecute() {
         doOnPreExecute()
@@ -91,7 +91,7 @@ abstract class AsyncDownloadForeground : AsyncTask<VersionEntity, Int, Boolean>(
                 val fos = FileOutputStream(apkFile)
                 // FileOutputStream fos = mContext.openFileOutput(apkFile.getAbsolutePath().toString(),mContext.MODE_PRIVATE);
                 val buf = ByteArray(1024)
-                var count = 0
+                var count = 0L
                 var length = -1
                 while (inputStream.read(buf).also { length = it } != -1) {
                     fos.write(buf, 0, length)
@@ -115,7 +115,7 @@ abstract class AsyncDownloadForeground : AsyncTask<VersionEntity, Int, Boolean>(
         return true
     }
 
-    override fun onProgressUpdate(vararg values: Int?) {
+    override fun onProgressUpdate(vararg values: Long?) {
         doOnProgressUpdate(*values)
     }
 

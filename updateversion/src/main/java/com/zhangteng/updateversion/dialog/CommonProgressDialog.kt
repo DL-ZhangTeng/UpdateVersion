@@ -15,6 +15,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.zhangteng.updateversion.R
 import com.zhangteng.updateversion.UpdateVersion
+import com.zhangteng.updateversion.config.Constant.PROGRESS_MAX
 import java.text.NumberFormat
 
 /**
@@ -25,10 +26,9 @@ class CommonProgressDialog(context: Context?, theme: Int) : AlertDialog(context,
     private var mProgressNumber: TextView? = null
     private var mProgressPercent: TextView? = null
     private var mProgressMessage: TextView? = null
-    private var mMax = 0
+    private var mMax = 0L
     private var mMessage: CharSequence? = null
-    private var mHasStarted = false
-    private var mProgressVal = 0
+    private var mProgressVal = 0L
     private var mProgressNumberFormat: String? = null
     private var mProgressPercentFormat: NumberFormat? = null
 
@@ -46,16 +46,11 @@ class CommonProgressDialog(context: Context?, theme: Int) : AlertDialog(context,
         if (UpdateVersion.themeColor != R.color.version_theme_color) {
             mProgressMessage?.background = titleBackgroundDrawable
         }
-        onProgressChanged()
         if (mMessage != null) {
             setMessage(mMessage!!)
         }
-        if (mMax > 0) {
-            max = mMax
-        }
-        if (mProgressVal > 0) {
-            setProgress(mProgressVal)
-        }
+        initFormats()
+        onProgressChanged()
     }
 
     private fun initFormats() {
@@ -65,10 +60,8 @@ class CommonProgressDialog(context: Context?, theme: Int) : AlertDialog(context,
     }
 
     private fun onProgressChanged() {
-        val progress = mProgress!!.progress
-        val max = mProgress!!.max
-        val dProgress = progress.toDouble() / (1024 * 1024).toDouble()
-        val dMax = max.toDouble() / (1024 * 1024).toDouble()
+        val dProgress = mProgressVal.toDouble() / (1024 * 1024).toDouble()
+        val dMax = mMax.toDouble() / (1024 * 1024).toDouble()
         if (mProgressNumberFormat != null) {
             val format: String = mProgressNumberFormat!!
             mProgressNumber!!.text = String.format(format, dProgress, dMax)
@@ -77,8 +70,8 @@ class CommonProgressDialog(context: Context?, theme: Int) : AlertDialog(context,
         }
         if (mProgressPercentFormat != null) {
             var percent = 0.0
-            if (max >= 0) {
-                percent = progress.toDouble() / max.toDouble()
+            if (mMax > 0) {
+                percent = mProgressVal.toDouble() / mMax.toDouble()
             }
             val tmp = SpannableString(mProgressPercentFormat!!.format(percent))
             if (tmp.isNotEmpty()) {
@@ -93,26 +86,18 @@ class CommonProgressDialog(context: Context?, theme: Int) : AlertDialog(context,
         }
     }
 
-    var max: Int
-        get() = if (mProgress != null) {
-            mProgress!!.max
-        } else mMax
-        set(max) {
-            if (mProgress != null) {
-                mProgress!!.max = max
-                onProgressChanged()
-            } else {
-                mMax = max
-            }
-        }
+    fun setMax(max: Long?) {
+        mMax = (max ?: PROGRESS_MAX) as Long
 
-    fun setProgress(value: Int) {
-        if (mHasStarted) {
-            mProgress!!.progress = value
-            onProgressChanged()
-        } else {
-            mProgressVal = value
-        }
+        mProgress?.max = PROGRESS_MAX
+        onProgressChanged()
+    }
+
+    fun setProgress(value: Long) {
+        mProgressVal = value
+
+        mProgress?.progress = (value * PROGRESS_MAX / mMax).toInt()
+        onProgressChanged()
     }
 
     override fun setMessage(message: CharSequence) {
@@ -121,16 +106,6 @@ class CommonProgressDialog(context: Context?, theme: Int) : AlertDialog(context,
         } else {
             mMessage = message
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mHasStarted = true
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mHasStarted = false
     }
 
     @Suppress("DEPRECATION")
@@ -155,8 +130,4 @@ class CommonProgressDialog(context: Context?, theme: Int) : AlertDialog(context,
             background.paint.color = context.resources.getColor(UpdateVersion.themeColor)
             return background
         }
-
-    init {
-        initFormats()
-    }
 }

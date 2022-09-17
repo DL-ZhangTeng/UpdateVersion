@@ -18,6 +18,13 @@ import androidx.core.content.FileProvider
 import com.zhangteng.updateversion.R
 import com.zhangteng.updateversion.UpdateVersion
 import com.zhangteng.updateversion.config.Constant
+import com.zhangteng.updateversion.config.Constant.COMPLETE_DOWNLOAD_APK
+import com.zhangteng.updateversion.config.Constant.DOWNLOAD_NOTIFICATION_ID
+import com.zhangteng.updateversion.config.Constant.NOTIFICATION_CHANNEL_DESCRIPTION
+import com.zhangteng.updateversion.config.Constant.NOTIFICATION_CHANNEL_ID
+import com.zhangteng.updateversion.config.Constant.NOTIFICATION_CHANNEL_NAME
+import com.zhangteng.updateversion.config.Constant.PROGRESS_MAX
+import com.zhangteng.updateversion.config.Constant.UPDATE_NOTIFICATION_PROGRESS
 import com.zhangteng.updateversion.dialog.CommonProgressDialog
 import java.io.File
 
@@ -53,30 +60,12 @@ class DownloadCallback {
                             )
                         )
                         ?.setTicker(if (mContext == null) "任务下载完成" else mContext!!.getString(R.string.notification_ticker_finish))
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    //判断是否是AndroidN以及更高的版本
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        intent.flags =
-                            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK
-                        val uri = UpdateVersion.provider?.let {
-                            FileProvider.getUriForFile(
-                                mContext!!,
-                                it,
-                                apkFile!!
-                            )
-                        }
-                        intent.setDataAndType(uri, "application/vnd.android.package-archive")
-                    } else {
-                        intent.setDataAndType(
-                            Uri.fromFile(apkFile),
-                            "application/vnd.android.package-archive"
-                        )
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    }
+
                     val pendingIntent = PendingIntent.getActivity(
-                        mContext, 0, intent, 0
+                        mContext, 0, getInstallIntent(apkFile), PendingIntent.FLAG_CANCEL_CURRENT
                     )
                     ntfBuilder?.setContentIntent(pendingIntent)
+
                     if (notificationManager == null) {
                         notificationManager =
                             mContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -114,9 +103,13 @@ class DownloadCallback {
      */
     fun onPostExecute(flag: Boolean) {
         if (flag) {
-            //下载成功执行安装步骤
             if (!UpdateVersion.isNotificationShow) {
+                //下载成功不是通知栏显示进度直接执行安装步骤
                 handler.obtainMessage(COMPLETE_DOWNLOAD_APK).sendToTarget()
+            } else {
+                //下载成功是通知栏显示进度发送完成信号
+                handler.obtainMessage(UPDATE_NOTIFICATION_PROGRESS, PROGRESS_MAX, PROGRESS_MAX)
+                    .sendToTarget()
             }
         } else {
             Log.e("Error", "下载失败。")
@@ -142,16 +135,17 @@ class DownloadCallback {
     /**
      * 下载进度监听
      */
-    fun onProgressUpdate(vararg values: Int?) {
+    fun onProgressUpdate(vararg values: Long?) {
+        val progress = if (values[0] == null) 0 else (values[0]!! * PROGRESS_MAX / total).toInt()
         if (UpdateVersion.isProgressDialogShow) {
-            progressDialog?.max = total.toInt()
+            progressDialog?.setMax(total)
             values[0]?.let {
-                progressDialog?.setProgress(it)
+                progressDialog?.setProgress(values[0] ?: 0)
             }
         }
         if (UpdateVersion.isNotificationShow) {
             values[0]?.let {
-                handler.obtainMessage(UPDATE_NOTIFICATION_PROGRESS, it, total.toInt())
+                handler.obtainMessage(UPDATE_NOTIFICATION_PROGRESS, progress, PROGRESS_MAX)
                     .sendToTarget()
             }
         }
@@ -189,7 +183,7 @@ class DownloadCallback {
                 ntfBuilder?.build()
             )
             if (total == progress) {
-                ntfBuilder?.setProgress(0, 0, true)
+                ntfBuilder?.setProgress(PROGRESS_MAX, PROGRESS_MAX, true)
                 notificationManager?.notify(
                     DOWNLOAD_NOTIFICATION_ID,
                     ntfBuilder?.build()
@@ -207,27 +201,7 @@ class DownloadCallback {
      */
     private fun installApk(apkFile: File?) {
         if (mContext != null) {
-            val intent = Intent(Intent.ACTION_VIEW)
-            //判断是否是AndroidN以及更高的版本
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                intent.flags =
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK
-                val uri = UpdateVersion.provider?.let {
-                    FileProvider.getUriForFile(
-                        mContext!!,
-                        it,
-                        apkFile!!
-                    )
-                }
-                intent.setDataAndType(uri, "application/vnd.android.package-archive")
-            } else {
-                intent.setDataAndType(
-                    Uri.fromFile(apkFile),
-                    "application/vnd.android.package-archive"
-                )
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            mContext?.startActivity(intent)
+            mContext?.startActivity(getInstallIntent(apkFile))
             if (notificationManager != null) {
                 notificationManager?.cancel(DOWNLOAD_NOTIFICATION_ID)
             }
@@ -235,6 +209,34 @@ class DownloadCallback {
             Log.e("NullPointerException", "The context must not be null.")
         }
         this.apkFile = null
+    }
+
+    /**
+     * 安装页面Intent
+     *
+     */
+    private fun getInstallIntent(apkFile: File?): Intent {
+        val intent = Intent(Intent.ACTION_VIEW)
+        //判断是否是AndroidN以及更高的版本
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.flags =
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK
+            val uri = UpdateVersion.provider?.let {
+                FileProvider.getUriForFile(
+                    mContext!!,
+                    it,
+                    apkFile!!
+                )
+            }
+            intent.setDataAndType(uri, "application/vnd.android.package-archive")
+        } else {
+            intent.setDataAndType(
+                Uri.fromFile(apkFile),
+                "application/vnd.android.package-archive"
+            )
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        return intent
     }
 
     private fun createNotificationChannel() {
@@ -255,14 +257,5 @@ class DownloadCallback {
             //在notificationManager中创建通知渠道
             notificationManager?.createNotificationChannel(notificationChannel)
         }
-    }
-
-    companion object {
-        private const val UPDATE_NOTIFICATION_PROGRESS = 0x1
-        private const val COMPLETE_DOWNLOAD_APK = 0x2
-        private const val DOWNLOAD_NOTIFICATION_ID = 0x3
-        private const val NOTIFICATION_CHANNEL_ID = "UpdateVersion"
-        private const val NOTIFICATION_CHANNEL_NAME = "版本更新"
-        private const val NOTIFICATION_CHANNEL_DESCRIPTION = "应用内版本更新"
     }
 }

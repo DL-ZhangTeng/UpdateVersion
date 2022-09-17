@@ -235,8 +235,8 @@ class MainActivity : AppCompatActivity() {
      * 网络下载
      */
     private fun downloadApk(versionEntity: VersionEntity?, downloadCallback: DownloadCallback) {
-        downloadCallback.doInBackground(100, File("/"))
-        downloadCallback.onProgressUpdate(100)
+        downloadCallback.doInBackground(100L, File("/"))
+        downloadCallback.onProgressUpdate(100L)
         downloadCallback.onPostExecute(true)
     }
 

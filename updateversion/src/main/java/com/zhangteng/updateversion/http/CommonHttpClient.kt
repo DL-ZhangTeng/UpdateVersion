@@ -63,7 +63,7 @@ open class CommonHttpClient(private val mContext: Context) : HttpClient {
                     downloadCallback.doInBackground(total, apkFile)
                 }
 
-                override fun doOnProgressUpdate(vararg values: Int?) {
+                override fun doOnProgressUpdate(vararg values: Long?) {
                     downloadCallback.onProgressUpdate(*values)
                 }
             }
