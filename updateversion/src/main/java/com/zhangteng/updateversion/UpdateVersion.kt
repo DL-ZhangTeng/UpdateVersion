@@ -3,7 +3,6 @@ package com.zhangteng.updateversion
 import android.util.Log
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import com.zhangteng.updateversion.BuildConfig
 import com.zhangteng.updateversion.callback.VersionInfoCallback
 import com.zhangteng.updateversion.http.HttpClient
 import com.zhangteng.utils.SSLUtils
