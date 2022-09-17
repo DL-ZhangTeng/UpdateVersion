@@ -1,6 +1,7 @@
 package com.zhangteng.updateversion.callback
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -19,6 +20,7 @@ import com.zhangteng.updateversion.UpdateVersion
 import com.zhangteng.updateversion.config.Constant
 import com.zhangteng.updateversion.dialog.CommonProgressDialog
 import java.io.File
+
 
 /**
  * 下载任务进度监听
@@ -42,7 +44,7 @@ class DownloadCallback {
                 COMPLETE_DOWNLOAD_APK -> if (UpdateVersion.isAutoInstall) {
                     installApk(apkFile)
                 } else {
-                    ntfBuilder = NotificationCompat.Builder(mContext!!, "版本更新")
+                    ntfBuilder = NotificationCompat.Builder(mContext!!, NOTIFICATION_CHANNEL_ID)
                     ntfBuilder?.setSmallIcon(mContext!!.applicationInfo.icon)
                         ?.setContentTitle(Constant.cache[Constant.APP_NAME])
                         ?.setContentText(
@@ -101,6 +103,9 @@ class DownloadCallback {
             if (!UpdateVersion.isNotificationShow) {
                 progressDialog?.show()
             }
+        }
+        if (UpdateVersion.isNotificationShow || !UpdateVersion.isAutoInstall) {
+            createNotificationChannel()
         }
     }
 
@@ -171,7 +176,7 @@ class DownloadCallback {
                     .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             }
             if (ntfBuilder == null) {
-                ntfBuilder = NotificationCompat.Builder(mContext!!, "版本更新")
+                ntfBuilder = NotificationCompat.Builder(mContext!!, NOTIFICATION_CHANNEL_ID)
                     .setSmallIcon(mContext!!.applicationInfo.icon)
                     .setTicker(if (mContext == null) "开始下载…" else mContext!!.getString(R.string.notification_ticker_start))
                     .setContentTitle(if (mContext == null) "更新" else mContext!!.getString(R.string.notification_ticker_start))
@@ -232,9 +237,32 @@ class DownloadCallback {
         this.apkFile = null
     }
 
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (notificationManager == null) {
+                notificationManager =
+                    mContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            }
+            //构建NotificationChannel实例
+            val notificationChannel =
+                NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    NOTIFICATION_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_HIGH
+                )
+            //配置通知渠道的属性
+            notificationChannel.description = NOTIFICATION_CHANNEL_DESCRIPTION
+            //在notificationManager中创建通知渠道
+            notificationManager?.createNotificationChannel(notificationChannel)
+        }
+    }
+
     companion object {
         private const val UPDATE_NOTIFICATION_PROGRESS = 0x1
         private const val COMPLETE_DOWNLOAD_APK = 0x2
         private const val DOWNLOAD_NOTIFICATION_ID = 0x3
+        private const val NOTIFICATION_CHANNEL_ID = "UpdateVersion"
+        private const val NOTIFICATION_CHANNEL_NAME = "版本更新"
+        private const val NOTIFICATION_CHANNEL_DESCRIPTION = "应用内版本更新"
     }
 }

@@ -54,7 +54,18 @@ class MainActivity : AppCompatActivity() {
             .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
             .build()
             //执行更新任务
-            .updateVersion(CommonHttpClient(this))
+            .updateVersion(object : CommonHttpClient(this) {
+                override fun getVersionInfo(
+                    versionInfoUrl: String?,
+                    versionInfoCallback: VersionInfoCallback
+                ) {
+                    versionInfoCallback.onPreExecute(
+                        this@MainActivity,
+                        this
+                    )
+                    updateVersion(versionInfoCallback)
+                }
+            })
     }
 
     fun onClick2(view: View?) {
@@ -80,7 +91,18 @@ class MainActivity : AppCompatActivity() {
             .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
             .build()
             //执行更新任务
-            .updateVersion(CommonHttpClient(this))
+            .updateVersion(object : CommonHttpClient(this) {
+                override fun getVersionInfo(
+                    versionInfoUrl: String?,
+                    versionInfoCallback: VersionInfoCallback
+                ) {
+                    versionInfoCallback.onPreExecute(
+                        this@MainActivity,
+                        this
+                    )
+                    updateVersion(versionInfoCallback)
+                }
+            })
     }
 
     fun onClick3(view: View?) {
@@ -106,7 +128,18 @@ class MainActivity : AppCompatActivity() {
             .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
             .build()
             //执行更新任务
-            .updateVersion(CommonHttpClient(this))
+            .updateVersion(object : CommonHttpClient(this) {
+                override fun getVersionInfo(
+                    versionInfoUrl: String?,
+                    versionInfoCallback: VersionInfoCallback
+                ) {
+                    versionInfoCallback.onPreExecute(
+                        this@MainActivity,
+                        this
+                    )
+                    updateVersion(versionInfoCallback)
+                }
+            })
     }
 
     fun onClick4(view: View?) {
@@ -136,7 +169,18 @@ class MainActivity : AppCompatActivity() {
             .setUploadImage(R.mipmap.upload_version_nonet)
             .build()
             //执行更新任务
-            .updateVersion(CommonHttpClient(this))
+            .updateVersion(object : CommonHttpClient(this) {
+                override fun getVersionInfo(
+                    versionInfoUrl: String?,
+                    versionInfoCallback: VersionInfoCallback
+                ) {
+                    versionInfoCallback.onPreExecute(
+                        this@MainActivity,
+                        this
+                    )
+                    updateVersion(versionInfoCallback)
+                }
+            })
     }
 
     fun onClick5(view: View?) {
@@ -175,18 +219,22 @@ class MainActivity : AppCompatActivity() {
                         this
                     )
                     updateVersion(versionInfoCallback)
-                } //                    @Override
-                //                    public void downloadApk(VersionEntity versionEntity, DownloadCallback downloadCallback) {
-                //                        downloadCallback.onPreExecute(MainActivity.this);
-                //                        MainActivity.this.downloadApk(versionEntity, downloadCallback);
-                //                    }
+                }
+
+//                override fun downloadApk(
+//                    versionEntity: VersionEntity?,
+//                    downloadCallback: DownloadCallback
+//                ) {
+//                    downloadCallback.onPreExecute(this@MainActivity)
+//                    this@MainActivity.downloadApk(versionEntity, downloadCallback);
+//                }
             })
     }
 
     /**
      * 网络下载
      */
-    private fun downloadApk(versionEntity: VersionEntity, downloadCallback: DownloadCallback) {
+    private fun downloadApk(versionEntity: VersionEntity?, downloadCallback: DownloadCallback) {
         downloadCallback.doInBackground(100, File("/"))
         downloadCallback.onProgressUpdate(100)
         downloadCallback.onPostExecute(true)
