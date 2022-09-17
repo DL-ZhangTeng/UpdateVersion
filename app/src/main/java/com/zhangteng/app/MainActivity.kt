@@ -23,9 +23,9 @@ class MainActivity : AppCompatActivity() {
             .with(this)
             .permission(*Permission.Group.STORAGE)
             .callback(object : Callback {
-                override fun success(permissionActivity: Activity) {}
-                override fun failure(permissionActivity: Activity) {}
-                override fun nonExecution(permissionActivity: Activity) {}
+                override fun success(permissionActivity: Activity?) {}
+                override fun failure(permissionActivity: Activity?) {}
+                override fun nonExecution(permissionActivity: Activity?) {}
             })
             .build()
         androidPermission.execute()

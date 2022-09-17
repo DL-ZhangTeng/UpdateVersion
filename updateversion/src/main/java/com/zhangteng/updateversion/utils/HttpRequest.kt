@@ -19,7 +19,7 @@ object HttpRequest {
             val httpURLConnection = urlPath.openConnection() as HttpURLConnection
             if (httpURLConnection is HttpsURLConnection) {
                 httpURLConnection.sslSocketFactory =
-                    UpdateVersion.getSslParams()?.sSLSocketFactory
+                    UpdateVersion.sslParams?.sSLSocketFactory
                 httpURLConnection.hostnameVerifier = UnSafeHostnameVerifier
             }
             httpURLConnection.connectTimeout = 3000

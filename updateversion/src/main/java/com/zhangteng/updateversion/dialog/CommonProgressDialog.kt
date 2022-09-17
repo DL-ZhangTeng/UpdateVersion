@@ -41,7 +41,7 @@ class CommonProgressDialog : AlertDialog {
     }
 
     @SuppressLint("HandlerLeak", "UseCompatLoadingForDrawables")
-    override fun onCreate(savedInstanceState: Bundle) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.common_progress_dialog)
         mProgress = findViewById(R.id.progress)

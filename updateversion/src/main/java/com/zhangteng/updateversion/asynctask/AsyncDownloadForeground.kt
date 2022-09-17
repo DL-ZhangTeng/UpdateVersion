@@ -1,10 +1,11 @@
 package com.zhangteng.updateversion.asynctask
 
-import android.os.AsyncTask
 import com.zhangteng.updateversion.UpdateVersion
 import com.zhangteng.updateversion.config.Constant
 import com.zhangteng.updateversion.entity.VersionEntity
 import com.zhangteng.utils.SSLUtils.UnSafeHostnameVerifier
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -16,7 +17,7 @@ import javax.net.ssl.HttpsURLConnection
 /**
  * Created by swing on 2018/5/14.
  */
-abstract class AsyncDownloadForeground : AsyncTask<VersionEntity?, Int?, Boolean>() {
+abstract class AsyncDownloadForeground : AsyncTask<VersionEntity, Int, Boolean>() {
     private var total: Long = 0
     private var apkFile: File? = null
 
@@ -28,7 +29,7 @@ abstract class AsyncDownloadForeground : AsyncTask<VersionEntity?, Int?, Boolean
     /**
      * 下载完成后发送安装请求
      */
-    abstract fun doOnPostExecute(flag: Boolean)
+    abstract fun doOnPostExecute(flag: Boolean?)
 
     /**
      * 从背景任务中获取apk大小及下载完成后的文件对象
@@ -39,22 +40,12 @@ abstract class AsyncDownloadForeground : AsyncTask<VersionEntity?, Int?, Boolean
      * 下载进度监听
      */
     abstract fun doOnProgressUpdate(vararg values: Int?)
+
     override fun onPreExecute() {
-        super.onPreExecute()
         doOnPreExecute()
     }
 
-    override fun onPostExecute(aBoolean: Boolean) {
-        super.onPostExecute(aBoolean)
-        doOnPostExecute(aBoolean)
-    }
-
-    override fun onProgressUpdate(vararg values: Int?) {
-        super.onProgressUpdate(*values)
-        doOnProgressUpdate(*values)
-    }
-
-    override fun doInBackground(vararg params: VersionEntity?): Boolean? {
+    override suspend fun doInBackground(vararg params: VersionEntity?): Boolean? {
         var url: URL? = null
         var urlConnection: HttpURLConnection? = null
         try {
@@ -108,18 +99,30 @@ abstract class AsyncDownloadForeground : AsyncTask<VersionEntity?, Int?, Boolean
                 while (inputStream.read(buf).also { length = it } != -1) {
                     fos.write(buf, 0, length)
                     count += length
-                    publishProgress(count)
+                    withContext(Dispatchers.Main) {
+                        onProgressUpdate(count)
+                    }
                 }
                 inputStream.close()
                 fos.close()
             }
         } catch (e: MalformedURLException) {
             e.printStackTrace()
+            doDoInBackground(total, apkFile)
+            return false
         } catch (e: IOException) {
             e.printStackTrace()
             doDoInBackground(total, apkFile)
             return false
         }
         return true
+    }
+
+    override fun onProgressUpdate(vararg values: Int?) {
+        doOnProgressUpdate(*values)
+    }
+
+    override fun onPostExecute(result: Boolean?) {
+        doOnPostExecute(result)
     }
 }

@@ -183,12 +183,14 @@ class UpdateVersion(private var builder: Builder) : VersionInfoCallback() {
     }
 
     companion object {
-        private var isAutoInstall = false
+        var isAutoInstall = false
+        var isProgressDialogShow = false
+        var sslParams: SSLUtils.SSLParams? = null
+
         var isUpdateDialogShow = false
             private set
         var isNetCustomDialogShow = false
             private set
-        private var isProgressDialogShow = false
         var isHintVersion = false
             private set
         var isUpdateTest = false
@@ -199,7 +201,6 @@ class UpdateVersion(private var builder: Builder) : VersionInfoCallback() {
             private set
         var checkUpdateCommonUrl: String? = null
             private set
-        private var sslParams: SSLUtils.SSLParams? = null
         var provider: String? = null
             private set
 
@@ -218,26 +219,6 @@ class UpdateVersion(private var builder: Builder) : VersionInfoCallback() {
         @DrawableRes
         var noNetImage = 0
             private set
-
-        fun isAutoInstall(): Boolean {
-            return isAutoInstall
-        }
-
-        fun setIsAutoInstall(isAutoInstall: Boolean) {
-            Companion.isAutoInstall = isAutoInstall
-        }
-
-        fun setIsProgressDialogShow(isProgressDialogShow: Boolean) {
-            Companion.isProgressDialogShow = isProgressDialogShow
-        }
-
-        fun isProgressDialogShow(): Boolean {
-            return isProgressDialogShow
-        }
-
-        fun getSslParams(): SSLUtils.SSLParams? {
-            return sslParams
-        }
     }
 
     init {

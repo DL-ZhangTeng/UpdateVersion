@@ -38,18 +38,18 @@ class DownloadCallback {
             super.handleMessage(msg)
             when (msg.what) {
                 UPDATE_NOTIFICATION_PROGRESS -> showDownloadNotificationUI(msg.arg1, msg.arg2)
-                COMPLETE_DOWNLOAD_APK -> if (UpdateVersion.Companion.isAutoInstall()) {
+                COMPLETE_DOWNLOAD_APK -> if (UpdateVersion.isAutoInstall) {
                     installApk(apkFile)
                 } else {
                     ntfBuilder = NotificationCompat.Builder(mContext!!)
-                    ntfBuilder!!.setSmallIcon(mContext!!.applicationInfo.icon)
-                        .setContentTitle(Constant.cache[Constant.APP_NAME])
-                        .setContentText(
+                    ntfBuilder?.setSmallIcon(mContext!!.applicationInfo.icon)
+                        ?.setContentTitle(Constant.cache[Constant.APP_NAME])
+                        ?.setContentText(
                             if (mContext == null) "下载完成，点击安装" else mContext!!.getString(
                                 R.string.notification_content_finish
                             )
                         )
-                        .setTicker(if (mContext == null) "任务下载完成" else mContext!!.getString(R.string.notification_ticker_finish))
+                        ?.setTicker(if (mContext == null) "任务下载完成" else mContext!!.getString(R.string.notification_ticker_finish))
                     val intent = Intent(Intent.ACTION_VIEW)
                     //判断是否是AndroidN以及更高的版本
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -73,14 +73,14 @@ class DownloadCallback {
                     val pendingIntent = PendingIntent.getActivity(
                         mContext, 0, intent, 0
                     )
-                    ntfBuilder!!.setContentIntent(pendingIntent)
+                    ntfBuilder?.setContentIntent(pendingIntent)
                     if (notificationManager == null) {
                         notificationManager =
                             mContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                     }
-                    notificationManager!!.notify(
+                    notificationManager?.notify(
                         DOWNLOAD_NOTIFICATION_ID,
-                        ntfBuilder!!.build()
+                        ntfBuilder?.build()
                     )
                 }
                 else -> {}
@@ -93,12 +93,12 @@ class DownloadCallback {
      */
     fun onPreExecute(context: Context?) {
         mContext = context
-        if (UpdateVersion.isProgressDialogShow()) {
+        if (UpdateVersion.isProgressDialogShow) {
             progressDialog = CommonProgressDialog(context, R.style.Translucent_Dialog)
-            progressDialog!!.setCancelable(false)
-            progressDialog!!.setMessage(if (mContext == null) "正在下载更新" else mContext!!.getString(R.string.progress_message))
+            progressDialog?.setCancelable(false)
+            progressDialog?.setMessage(if (mContext == null) "正在下载更新" else mContext!!.getString(R.string.progress_message))
             if (!UpdateVersion.isNotificationShow) {
-                progressDialog!!.show()
+                progressDialog?.show()
             }
         }
     }
@@ -116,12 +116,12 @@ class DownloadCallback {
             Log.e("Error", "下载失败。")
             Toast.makeText(
                 mContext,
-                if (mContext == null) "下载失败，请到应用商城或官网下载" else mContext!!.getString(R.string.download_failure),
+                if (mContext == null) "下载失败，请到应用商城或官网下载" else mContext?.getString(R.string.download_failure),
                 Toast.LENGTH_LONG
             ).show()
         }
-        if (UpdateVersion.isProgressDialogShow()) {
-            progressDialog!!.dismiss()
+        if (UpdateVersion.isProgressDialogShow) {
+            progressDialog?.dismiss()
         }
     }
 
@@ -137,10 +137,10 @@ class DownloadCallback {
      * 下载进度监听
      */
     fun onProgressUpdate(vararg values: Int?) {
-        if (UpdateVersion.isProgressDialogShow()) {
+        if (UpdateVersion.isProgressDialogShow) {
             progressDialog?.max = total.toInt()
             values[0]?.let {
-                progressDialog!!.setProgress(it)
+                progressDialog?.setProgress(it)
             }
         }
         if (UpdateVersion.isNotificationShow) {
@@ -175,19 +175,19 @@ class DownloadCallback {
                     .setContentTitle(if (mContext == null) "更新" else mContext!!.getString(R.string.notification_ticker_start))
                     .setContentIntent(contentIntent)
             }
-            ntfBuilder!!.setContentText(contentText)
-            ntfBuilder!!.setProgress(total, progress, false)
-            notificationManager!!.notify(
+            ntfBuilder?.setContentText(contentText)
+            ntfBuilder?.setProgress(total, progress, false)
+            notificationManager?.notify(
                 DOWNLOAD_NOTIFICATION_ID,
-                ntfBuilder!!.build()
+                ntfBuilder?.build()
             )
             if (total == progress) {
-                ntfBuilder!!.setProgress(0, 0, true)
-                notificationManager!!.notify(
+                ntfBuilder?.setProgress(0, 0, true)
+                notificationManager?.notify(
                     DOWNLOAD_NOTIFICATION_ID,
-                    ntfBuilder!!.build()
+                    ntfBuilder?.build()
                 )
-                notificationManager!!.cancel(DOWNLOAD_NOTIFICATION_ID)
+                notificationManager?.cancel(DOWNLOAD_NOTIFICATION_ID)
                 handler.obtainMessage(COMPLETE_DOWNLOAD_APK).sendToTarget()
             }
         }
@@ -220,9 +220,9 @@ class DownloadCallback {
                 )
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
-            mContext!!.startActivity(intent)
+            mContext?.startActivity(intent)
             if (notificationManager != null) {
-                notificationManager!!.cancel(DOWNLOAD_NOTIFICATION_ID)
+                notificationManager?.cancel(DOWNLOAD_NOTIFICATION_ID)
             }
         } else {
             Log.e("NullPointerException", "The context must not be null.")

@@ -59,13 +59,13 @@ open class VersionInfoCallback {
             )
             if (versionEntity!!.versionCode > packageInfo!!.versionCode) {
                 if (versionEntity!!.forceUpdate != 0) {
-                    UpdateVersion.setIsAutoInstall(true)
-                    UpdateVersion.setIsProgressDialogShow(true)
+                    UpdateVersion.isAutoInstall = true
+                    UpdateVersion.isProgressDialogShow = true
                     val type = mContext.getConnectedType()
                     if (type != NetType.Wifi && UpdateVersion.isNetCustomDialogShow) {
                         showUpdateUICustom(versionEntity!!)
                     } else {
-                        httpClient!!.downloadApk(versionEntity, DownloadCallback())
+                        httpClient?.downloadApk(versionEntity, DownloadCallback())
                     }
                 } else {
                     if (UpdateVersion.isUpdateDialogShow) {
@@ -76,11 +76,11 @@ open class VersionInfoCallback {
                             showNetCustomDialog(versionEntity!!)
                         } else {
                             if (!UpdateVersion.isUpdateDownloadWithBrowser) {
-                                httpClient!!.downloadApk(versionEntity, DownloadCallback())
+                                httpClient?.downloadApk(versionEntity, DownloadCallback())
                             } else {
                                 val i =
-                                    Intent(Intent.ACTION_VIEW, Uri.parse(versionEntity!!.url))
-                                mContext!!.startActivity(i)
+                                    Intent(Intent.ACTION_VIEW, Uri.parse(versionEntity?.url))
+                                mContext?.startActivity(i)
                             }
                         }
                     }
@@ -109,11 +109,11 @@ open class VersionInfoCallback {
      * 获取当前app版本
      */
     private val packageInfo: PackageInfo?
-        private get() {
+        get() {
             var pinfo: PackageInfo? = null
             if (mContext != null) {
                 try {
-                    pinfo = mContext!!.packageManager.getPackageInfo(
+                    pinfo = mContext?.packageManager?.getPackageInfo(
                         mContext!!.packageName, 0
                     )
                 } catch (e: PackageManager.NameNotFoundException) {
@@ -136,7 +136,8 @@ open class VersionInfoCallback {
                 """
      
      ${versionEntity.versionNo}
-     """.trimIndent()
+     """
+                    .trimIndent()
             )
         )
         dialogFragment.setContentTitleText(
@@ -163,10 +164,10 @@ open class VersionInfoCallback {
                         showNetCustomDialog(versionEntity)
                     } else {
                         if (!UpdateVersion.isUpdateDownloadWithBrowser) {
-                            httpClient!!.downloadApk(versionEntity, DownloadCallback())
+                            httpClient?.downloadApk(versionEntity, DownloadCallback())
                         } else {
                             val i = Intent(Intent.ACTION_VIEW, Uri.parse(versionEntity.url))
-                            mContext!!.startActivity(i)
+                            mContext?.startActivity(i)
                         }
                     }
                 }
@@ -182,7 +183,7 @@ open class VersionInfoCallback {
      * 手机网络dialog
      */
     @SuppressLint("WrongConstant")
-    private fun showNetCustomDialog(versionEntity: VersionEntity) {
+    private fun showNetCustomDialog(versionEntity: VersionEntity?) {
         val dialogFragment = UpdateDialogFragment()
         dialogFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0)
         dialogFragment.setContentText(
@@ -199,10 +200,10 @@ open class VersionInfoCallback {
             object : UpdateDialogFragment.OnClickListener {
                 override fun onClick() {
                     if (!UpdateVersion.isUpdateDownloadWithBrowser) {
-                        httpClient!!.downloadApk(versionEntity, DownloadCallback())
+                        httpClient?.downloadApk(versionEntity, DownloadCallback())
                     } else {
-                        val i = Intent(Intent.ACTION_VIEW, Uri.parse(versionEntity.url))
-                        mContext!!.startActivity(i)
+                        val i = Intent(Intent.ACTION_VIEW, Uri.parse(versionEntity?.url))
+                        mContext?.startActivity(i)
                     }
                 }
             })
@@ -219,7 +220,7 @@ open class VersionInfoCallback {
         fun nativeAssertGet(URL: String?): InputStream? {
             var inputStream: InputStream? = null
             try {
-                inputStream = mContext!!.assets.open(URL!!)
+                inputStream = mContext?.assets?.open(URL!!)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

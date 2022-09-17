@@ -1,6 +1,5 @@
 package com.zhangteng.updateversion.asynctask
 
-import android.os.AsyncTask
 import android.util.Log
 import com.zhangteng.updateversion.UpdateVersion
 import com.zhangteng.updateversion.callback.VersionInfoCallback
@@ -12,7 +11,7 @@ import com.zhangteng.utils.isNetworkUrl
 /**
  * Created by swing on 2018/5/14.
  */
-abstract class AsyncCheck : AsyncTask<String?, Int?, VersionEntity?>() {
+abstract class AsyncCheck : AsyncTask<String, Int, VersionEntity>() {
     /**
      * 准备执行
      */
@@ -21,20 +20,20 @@ abstract class AsyncCheck : AsyncTask<String?, Int?, VersionEntity?>() {
     /**
      * 获取版本信息后执行
      *
-     * @param versionEntity 版本信息
+     * @param result 版本信息
      */
-    abstract fun doDoInBackground(versionEntity: VersionEntity?)
+    abstract fun doDoInBackground(result: VersionEntity?)
 
     /**
      * 任务完成
      */
-    abstract fun doOnPostExecute()
+    abstract fun doOnPostExecute(result: VersionEntity?)
+
     override fun onPreExecute() {
-        super.onPreExecute()
         doOnPreExecute()
     }
 
-    override fun doInBackground(vararg params: String?): VersionEntity? {
+    override suspend fun doInBackground(vararg params: String?): VersionEntity? {
         var versionEntity: VersionEntity? = null
         if (params.isEmpty()) {
             Log.e(
@@ -50,10 +49,10 @@ abstract class AsyncCheck : AsyncTask<String?, Int?, VersionEntity?>() {
         try {
             if (UpdateVersion.isUpdateTest) {
                 versionEntity =
-                    JSONHandler.toVersionEntity(VersionInfoCallback.Companion.nativeAssertGet("versionInfo.json"))
+                    JSONHandler.toVersionEntity(VersionInfoCallback.nativeAssertGet("versionInfo.json"))
             } else {
-                if (HttpRequest.get(url) != null) {
-                    versionEntity = JSONHandler.toVersionEntity(HttpRequest.get(url))
+                if (HttpRequest[url] != null) {
+                    versionEntity = JSONHandler.toVersionEntity(HttpRequest[url])
                 }
             }
         } catch (e: Exception) {
@@ -63,8 +62,7 @@ abstract class AsyncCheck : AsyncTask<String?, Int?, VersionEntity?>() {
         return versionEntity
     }
 
-    override fun onPostExecute(versionEntity: VersionEntity?) {
-        super.onPostExecute(versionEntity)
-        doOnPostExecute()
+    override fun onPostExecute(result: VersionEntity?) {
+        doOnPostExecute(result)
     }
 }
