@@ -38,34 +38,29 @@ uploadImage| 提示更新背景图
 noNetImage| 无网络提示图
 ## 使用
 ```java
-new UpdateVersion.Builder()
-                //是否为调试模式
-                .isUpdateTest(true)
-                //通知栏显示
-                .isNotificationShow(true)
-                //是否自动安装
-                .isAutoInstall(true)
-                //是否提示更新信息
-                .isHintVersion(true)
-                //是否显示更新dialog
-                .isUpdateDialogShow(true)
-                //是否显示移动网络提示dialog
-                .isNetCustomDialogShow(true)
-                //是否显示下载进度dialog
-                .isProgressDialogShow(true)
-                //是否使用浏览器更新
-                .isUpdateDownloadWithBrowser(false)
-                //获取服务器的版本信息
-                .setCheckUpdateCommonUrl("http://")
-                .setSSLParams(SSLUtils.INSTANCE.getSslSocketFactory())
-                .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
-                .setThemeColor(R.color.colorPrimary)
-                .setProgressDrawable(R.drawable.progressbar)
-                .setNoNetImage(R.mipmap.upload_version_nonet)
-                .setUploadImage(R.mipmap.upload_version_gengxin)
-                .build()
-                //执行更新任务
-                .updateVersion(new CommonHttpClient(this, this.getSupportFragmentManager()));
+UpdateVersion.Builder()
+            //是否为调试模式
+            .isUpdateTest(true)
+            //通知栏显示
+            .isNotificationShow(true)
+            //是否自动安装
+            .isAutoInstall(true)
+            //是否提示更新信息
+            .isHintVersion(true)
+            //是否显示更新dialog
+            .isUpdateDialogShow(true)
+            //是否显示移动网络提示dialog
+            .isNetCustomDialogShow(true)
+            //是否显示下载进度dialog
+            .isProgressDialogShow(true)
+            //是否使用浏览器更新
+            .isUpdateDownloadWithBrowser(false)
+            //获取服务器的版本信息
+            .setCheckUpdateCommonUrl("http://")
+            .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
+            .build()
+            //执行更新任务
+            .updateVersion(CommonHttpClient(this, this.supportFragmentManager))
 ```
 
 ## 混淆
@@ -73,6 +68,7 @@ new UpdateVersion.Builder()
 ## 历史版本
 版本| 更新| 更新时间
 -------- | ----- | -----
+v2.0.0| 使用协程处理异步任务|2022/9/17 at 18:58
 v1.5.0| 兼容分区存储|2022/9/16 at 16:23
 v1.4.0| 使用独立的Utils库|2022/9/2 at 20:43
 v1.3.0| 增加Https支持|2022/8/20 at 13:48

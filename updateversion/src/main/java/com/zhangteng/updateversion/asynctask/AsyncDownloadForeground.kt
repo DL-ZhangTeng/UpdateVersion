@@ -59,7 +59,7 @@ abstract class AsyncDownloadForeground : AsyncTask<VersionEntity, Int, Boolean>(
             // 2.2版本以上HttpURLConnection跟服务交互采用了"gzip"压缩，添加这行代码避免total = -1
             urlConnection.setRequestProperty("Accept-Encoding", "identity")
             //设置超时间为3秒
-            urlConnection.connectTimeout = 3 * 1000
+            urlConnection.connectTimeout = 5 * 1000
             //防止屏蔽程序抓取而返回403错误
             urlConnection.setRequestProperty(
                 "User-Agent",
@@ -71,16 +71,13 @@ abstract class AsyncDownloadForeground : AsyncTask<VersionEntity, Int, Boolean>(
                 //得到输入流
                 val inputStream = urlConnection.inputStream
                 total = urlConnection.contentLength.toLong()
-                val apkName = (params[0]?.name
-                        + params[0]?.versionNo + Constant.SUFFIX)
-                Constant.cache[Constant.APP_NAME] = params[0]?.name
+                val appName = params[0]?.name ?: "app"
+                val versionNo = params[0]?.versionNo ?: ""
+                val apkName = "${appName}${versionNo}${Constant.SUFFIX}"
+                Constant.cache[Constant.APP_NAME] = appName
                 Constant.cache[Constant.APK_PATH] =
-                    (Constant.PATH + File.separator + params[0]?.name
-                            + File.separator + apkName)
-                val savePath = File(
-                    Constant.PATH + File.separator
-                            + params[0]?.name
-                )
+                    "${Constant.PATH}${File.separator}$appName${File.separator}$apkName"
+                val savePath = File("${Constant.PATH}${File.separator}${appName}")
                 if (!savePath.exists()) {
                     savePath.mkdirs()
                 }
