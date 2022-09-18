@@ -65,7 +65,8 @@ class DownloadCallback {
                         mContext, 0, getInstallIntent(apkFile), PendingIntent.FLAG_CANCEL_CURRENT
                     )
                     ntfBuilder?.setContentIntent(pendingIntent)
-
+                    ntfBuilder?.setOnlyAlertOnce(true)
+                    ntfBuilder?.setVibrate(longArrayOf(500, 500, 500, 500, 500, 500, 500, 500, 500))
                     if (notificationManager == null) {
                         notificationManager =
                             mContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -175,6 +176,7 @@ class DownloadCallback {
                     .setTicker(if (mContext == null) "开始下载…" else mContext!!.getString(R.string.notification_ticker_start))
                     .setContentTitle(if (mContext == null) "更新" else mContext!!.getString(R.string.notification_ticker_start))
                     .setContentIntent(contentIntent)
+                    .setOnlyAlertOnce(true)
             }
             ntfBuilder?.setContentText(contentText)
             ntfBuilder?.setProgress(total, progress, false)

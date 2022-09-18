@@ -65,8 +65,10 @@ open class VersionInfoCallback {
             )
             if (versionEntity!!.versionCode > versionCode) {
                 if (versionEntity!!.forceUpdate != 0) {
+                    //强制更新使用进度弹窗并自动安装
                     UpdateVersion.isAutoInstall = true
                     UpdateVersion.isProgressDialogShow = true
+                    UpdateVersion.isNotificationShow = false
                     val type = mContext.getConnectedType()
                     if (type != NetType.Wifi && UpdateVersion.isNetCustomDialogShow) {
                         showUpdateUICustom(versionEntity!!)

@@ -19,16 +19,20 @@ class UpdateVersion(private var builder: Builder) : VersionInfoCallback() {
 
     private fun initParams(builder: Builder) {
         isAutoInstall = builder.isAutoInstall
+        isProgressDialogShow = builder.isProgressDialogShow
+        isNotificationShow = builder.isNotificationShow
+
         isUpdateDialogShow = builder.isUpdateDialogShow
         isNetCustomDialogShow = builder.isNetCustomDialogShow
-        isProgressDialogShow = builder.isProgressDialogShow
         isHintVersion = builder.isHintVersion
-        isUpdateTest = builder.isUpdateTest
         isUpdateDownloadWithBrowser = builder.isUpdateDownloadWithBrowser
-        isNotificationShow = builder.isNotificationShow
         checkUpdateCommonUrl = builder.checkUpdateCommonUrl
-        sslParams = builder.sslParams
+
         provider = builder.provider
+        sslParams = builder.sslParams
+
+        isUpdateTest = builder.isUpdateTest
+
         themeColor = builder.themeColor
         progressDrawable = builder.progressDrawable
         uploadImage = builder.uploadImage
@@ -49,31 +53,61 @@ class UpdateVersion(private var builder: Builder) : VersionInfoCallback() {
 
     class Builder {
         var isAutoInstall = true
-        var isUpdateDialogShow = true
-        var isNetCustomDialogShow = true
+            private set
         var isProgressDialogShow = true
-        var isHintVersion = true
-        var isUpdateTest = false
-        var isUpdateDownloadWithBrowser = false
+            private set
         var isNotificationShow = false
+            private set
+
+        var isUpdateDialogShow = true
+            private set
+        var isNetCustomDialogShow = true
+            private set
+        var isHintVersion = true
+            private set
+        var isUpdateDownloadWithBrowser = false
+            private set
         var checkUpdateCommonUrl = ""
-        var sslParams: SSLUtils.SSLParams = sslSocketFactory
+            private set
+
         var provider = BuildConfig.LIBRARY_PACKAGE_NAME + ".FileProvider"
+            private set
+        var sslParams: SSLUtils.SSLParams = sslSocketFactory
+            private set
+
+        var isUpdateTest = false
+            private set
 
         @ColorRes
         var themeColor = R.color.version_theme_color
+            private set
 
         @DrawableRes
         var progressDrawable = R.drawable.progressbar
+            private set
 
         @DrawableRes
         var uploadImage = R.mipmap.upload_version_gengxin
+            private set
 
         @DrawableRes
         var noNetImage = R.mipmap.upload_version_nonet
+            private set
+
         private var updateVersion: UpdateVersion? = null
+
         fun isAutoInstall(autoInstall: Boolean): Builder {
             isAutoInstall = autoInstall
+            return this
+        }
+
+        fun isProgressDialogShow(progressDialogShow: Boolean): Builder {
+            isProgressDialogShow = progressDialogShow
+            return this
+        }
+
+        fun isNotificationShow(isNotificationShow: Boolean): Builder {
+            this.isNotificationShow = isNotificationShow
             return this
         }
 
@@ -87,18 +121,8 @@ class UpdateVersion(private var builder: Builder) : VersionInfoCallback() {
             return this
         }
 
-        fun isProgressDialogShow(progressDialogShow: Boolean): Builder {
-            isProgressDialogShow = progressDialogShow
-            return this
-        }
-
         fun isHintVersion(hintVersion: Boolean): Builder {
             isHintVersion = hintVersion
-            return this
-        }
-
-        fun isUpdateTest(updateTest: Boolean): Builder {
-            isUpdateTest = updateTest
             return this
         }
 
@@ -107,13 +131,13 @@ class UpdateVersion(private var builder: Builder) : VersionInfoCallback() {
             return this
         }
 
-        fun isNotificationShow(isNotificationShow: Boolean): Builder {
-            this.isNotificationShow = isNotificationShow
+        fun setCheckUpdateCommonUrl(checkUpdateCommonUrl: String): Builder {
+            this.checkUpdateCommonUrl = checkUpdateCommonUrl
             return this
         }
 
-        fun setCheckUpdateCommonUrl(checkUpdateCommonUrl: String): Builder {
-            this.checkUpdateCommonUrl = checkUpdateCommonUrl
+        fun setProvider(provider: String): Builder {
+            this.provider = provider
             return this
         }
 
@@ -127,8 +151,8 @@ class UpdateVersion(private var builder: Builder) : VersionInfoCallback() {
             return this
         }
 
-        fun setProvider(provider: String): Builder {
-            this.provider = provider
+        fun isUpdateTest(updateTest: Boolean): Builder {
+            isUpdateTest = updateTest
             return this
         }
 
@@ -185,7 +209,7 @@ class UpdateVersion(private var builder: Builder) : VersionInfoCallback() {
     companion object {
         var isAutoInstall = false
         var isProgressDialogShow = false
-        var sslParams: SSLUtils.SSLParams? = null
+        var isNotificationShow = false
 
         var isUpdateDialogShow = false
             private set
@@ -193,15 +217,16 @@ class UpdateVersion(private var builder: Builder) : VersionInfoCallback() {
             private set
         var isHintVersion = false
             private set
-        var isUpdateTest = false
-            private set
         var isUpdateDownloadWithBrowser = false
-            private set
-        var isNotificationShow = false
             private set
         var checkUpdateCommonUrl: String? = null
             private set
         var provider: String? = null
+            private set
+        var sslParams: SSLUtils.SSLParams? = null
+            private set
+
+        var isUpdateTest = false
             private set
 
         @ColorRes
