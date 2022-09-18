@@ -10,7 +10,7 @@ allprojects {
     }
 }
 
-implementation 'com.github.DL-ZhangTeng:UpdateVersion:1.5.0'
+implementation 'com.github.DL-ZhangTeng:UpdateVersion:2.0.0'
     //使用的三方库
     implementation 'com.github.DL-ZhangTeng:Utils:2.0.+'
 ```
