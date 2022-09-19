@@ -21,28 +21,28 @@ implementation 'com.github.DL-ZhangTeng:UpdateVersion:2.0.0'
 ## 属性
 属性名| 描述
 --- | -----
-isAutoInstall| 是否自动安装
-isUpdateDialogShow| 是否显示更新提示
-isNetCustomDialogShow| 是否显示移动网络提示
-isProgressDialogShow| 是否显示下载进度
+isAutoInstall| 下载完成后是否自动安装
+isProgressDialogShow| 是否显示下载进度弹窗（通知栏显示下载时不会弹出）
+isNotificationShow| 是否通知栏显示下载进度通知与确认安装通知（自动安装时不会发送确认安装通知）
+isUpdateDialogShow| 是否显示更新提示信息弹窗
+isNetCustomDialogShow| 是否显示移动网络提示信息弹窗
 isHintVersion| 是否提示“当前已是最新版”
-isUpdateTest| 是否是测试模式（数据来源：versionInfo.json）
 isUpdateDownloadWithBrowser| 是否使用浏览器下载
-isNotificationShow| 是否通知栏显示
-checkUpdateCommonUrl| 获取版本信息url
-sslParams| HTTPS 证书
+checkUpdateCommonUrl| 获取版本信息url（可以重写CommonHttpClient）
 provider| FileProvider(默认：BuildConfig.LIBRARY_PACKAGE_NAME + ".FileProvider")
+sslParams| HTTPS 证书
+isUpdateTest| 是否是测试模式（数据来源：versionInfo.json）
 themeColor| 主题色
-setProgressDrawable| 增加进度条样式
-uploadImage| 提示更新背景图
-noNetImage| 无网络提示图
+setProgressDrawable| 设置进度条样式
+uploadImage| 提示更新信息弹窗背景图
+noNetImage| 网络提示信息弹窗背景图
 ## 使用
 ```java
 UpdateVersion.Builder()
             //是否为调试模式
             .isUpdateTest(true)
             //通知栏显示
-            .isNotificationShow(true)
+            .isNotificationShow(false)
             //是否自动安装
             .isAutoInstall(true)
             //是否提示更新信息
@@ -60,7 +60,7 @@ UpdateVersion.Builder()
             .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
             .build()
             //执行更新任务
-            .updateVersion(CommonHttpClient(this, this.supportFragmentManager))
+            .updateVersion(CommonHttpClient(this))
 ```
 
 ## 混淆
