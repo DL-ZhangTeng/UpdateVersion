@@ -40,9 +40,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation project(':updateversion')
 
-
-    //noinspection GradleDynamicVersion
-    implementation 'com.github.DL-ZhangTeng:RequestPermission:1.2.+'
-    //noinspection GradleDynamicVersion
-    implementation 'com.github.DL-ZhangTeng:Utils:2.0.+'
+    implementation 'com.github.DL-ZhangTeng:RequestPermission:1.2.0'
+    implementation 'com.github.DL-ZhangTeng:Utils:2.0.1'
 }
