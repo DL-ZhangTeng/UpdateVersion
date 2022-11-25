@@ -1,8 +1,12 @@
 # 应用内版本更新库UpdateVersion
+
 UpdateVersion是一个Android版本更新库。
 [GitHub仓库地址](https://github.com/DL-ZhangTeng/UpdateVersion)
+
 ## 引入
+
 ### gradle
+
 ```groovy
 allprojects {
     repositories {
@@ -10,15 +14,18 @@ allprojects {
     }
 }
 
-implementation 'com.github.DL-ZhangTeng:UpdateVersion:2.0.0'
-    //使用的三方库
-    implementation 'com.github.DL-ZhangTeng:Utils:2.0.1'
+implementation 'com.github.DL-ZhangTeng:UpdateVersion:2.0.1'
+//使用的三方库
+implementation 'com.github.DL-ZhangTeng:Utils:2.0.3'
 ```
+
 ## 效果图
+
 ![无wifi](https://img-blog.csdnimg.cn/20200807172122393.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2R1b2x1bzk=,size_16,color_FFFFFF,t_70)
 ![新版本](https://img-blog.csdnimg.cn/20200807172122399.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2R1b2x1bzk=,size_16,color_FFFFFF,t_70)
 
 ## 属性
+
 | 属性名                         | 描述                                                                  |
 |-----------------------------|---------------------------------------------------------------------|
 | isAutoInstall               | 下载完成后是否自动安装                                                         |
@@ -38,37 +45,42 @@ implementation 'com.github.DL-ZhangTeng:UpdateVersion:2.0.0'
 | noNetImage                  | 网络提示信息弹窗背景图                                                         |
 
 ## 使用
+
 ```kotlin
 UpdateVersion.Builder()
-        //是否为调试模式
-        .isUpdateTest(true)
-        //通知栏显示
-        .isNotificationShow(true)
-        //是否自动安装
-        .isAutoInstall(true)
-        //是否提示更新信息
-        .isHintVersion(true)
-        //是否显示更新dialog
-        .isUpdateDialogShow(true)
-        //是否显示移动网络提示dialog
-        .isNetCustomDialogShow(true)
-        //是否显示下载进度dialog
-        .isProgressDialogShow(true)
-        //是否使用浏览器更新
-        .isUpdateDownloadWithBrowser(false)
-        //获取服务器的版本信息
-        .setCheckUpdateCommonUrl("http://")
-        .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
-        .build()
-        //执行更新任务
-        .updateVersion(CommonHttpClient(this))
+    //是否为调试模式
+    .isUpdateTest(true)
+    //通知栏显示
+    .isNotificationShow(true)
+    //是否自动安装
+    .isAutoInstall(true)
+    //是否提示更新信息
+    .isHintVersion(true)
+    //是否显示更新dialog
+    .isUpdateDialogShow(true)
+    //是否显示移动网络提示dialog
+    .isNetCustomDialogShow(true)
+    //是否显示下载进度dialog
+    .isProgressDialogShow(true)
+    //是否使用浏览器更新
+    .isUpdateDownloadWithBrowser(false)
+    //获取服务器的版本信息
+    .setCheckUpdateCommonUrl("http://")
+    .setProvider(BuildConfig.APPLICATION_ID + ".FileProvider")
+    .build()
+    //执行更新任务
+    .updateVersion(CommonHttpClient(this))
 ```
 
 ## 混淆
+
 -keep public class com.zhangteng.**.*{ *; }
+
 ## 历史版本
+
 | 版本     | 更新                                      | 更新时间                       |
 |--------|-----------------------------------------|----------------------------|
+| v2.0.1 | Android8.0未知应用安装兼容                      | 2022/11/25 at 13:22        |
 | v2.0.0 | 使用协程处理异步任务                              | 2022/9/17 at 18:58         |
 | v1.5.0 | 兼容分区存储                                  | 2022/9/16 at 16:23         |
 | v1.4.0 | 使用独立的Utils库                             | 2022/9/2 at 20:43          |
@@ -85,12 +97,15 @@ UpdateVersion.Builder()
 | v1.0.2 | 增加主题自定义                                 | 2020/6/1 0001 at 下午 17:54  |
 
 ## 赞赏
+
 如果您喜欢UpdateVersion，或感觉UpdateVersion帮助到了您，可以点右上角“Star”支持一下，您的支持就是我的动力，谢谢。
 
 ## 联系我
+
 邮箱：763263311@qq.com/ztxiaoran@foxmail.com
 
 ## License
+
 Copyright (c) [2020] [Swing]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
