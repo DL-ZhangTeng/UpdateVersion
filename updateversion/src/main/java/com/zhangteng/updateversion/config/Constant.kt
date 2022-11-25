@@ -29,4 +29,7 @@ object Constant {
 
     //进度条最大值（影响精度）
     const val PROGRESS_MAX = 1000
+
+    //Android8.0未知来源应用的管理列表请求code
+    const val REQUEST_INSTALL_PACKAGES_REQUEST_CODE  = 10000
 }

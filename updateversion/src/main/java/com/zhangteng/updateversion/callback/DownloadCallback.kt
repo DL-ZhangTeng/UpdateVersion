@@ -1,6 +1,7 @@
 package com.zhangteng.updateversion.callback
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -15,6 +16,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
+import com.zhangteng.updateversion.InstallPermissionActivity
 import com.zhangteng.updateversion.R
 import com.zhangteng.updateversion.UpdateVersion
 import com.zhangteng.updateversion.config.Constant
@@ -26,6 +28,7 @@ import com.zhangteng.updateversion.config.Constant.NOTIFICATION_CHANNEL_NAME
 import com.zhangteng.updateversion.config.Constant.PROGRESS_MAX
 import com.zhangteng.updateversion.config.Constant.UPDATE_NOTIFICATION_PROGRESS
 import com.zhangteng.updateversion.dialog.CommonProgressDialog
+import com.zhangteng.updateversion.dialog.InstallPermissionDialog
 import java.io.File
 
 
@@ -203,7 +206,56 @@ class DownloadCallback {
      */
     private fun installApk(apkFile: File?) {
         if (mContext != null) {
-            mContext?.startActivity(getInstallIntent(apkFile))
+            //判断是否是AndroidO以及更高的版本
+            //Android8.0的变化是，未知应用安装权限的开关被除掉，取而代之的是未知来源应用的管理列表，需要在里面打开每个应用的未知来源的安装权限
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                //是否有安装未知应用权限
+                val haveInstallPermission = mContext?.packageManager?.canRequestPackageInstalls()
+                if (haveInstallPermission == true) {
+                    mContext?.startActivity(getInstallIntent(apkFile))
+                } else {
+                    //未知来源应用的管理列表开启权限，安装应用需要打开未知来源权限，请去设置中开启权限
+                    InstallPermissionDialog(mContext, R.style.Translucent_Dialog)
+                        .apply {
+                            setCancelable(false)
+                            setCanceledOnTouchOutside(false)
+                            setCancelListener {
+                                Log.e("InstallException", "安装应用需要打开未知来源权限，请去设置中开启权限")
+                                Toast.makeText(
+                                    mContext,
+                                    if (mContext == null) "安装应用需要打开未知来源权限，请去设置中开启权限" else mContext?.getString(
+                                        R.string.permission_dialog_content
+                                    ),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                            setSubmitListener {
+                                //跳转权限设置页面，需要使用onActivityResult中回调结果
+                                InstallPermissionActivity.requestPermission(mContext!!,
+                                    object : InstallPermissionCallback {
+                                        override fun success(permissionActivity: Activity?) {
+                                            mContext?.startActivity(getInstallIntent(apkFile))
+                                        }
+
+                                        override fun failure(permissionActivity: Activity?) {
+                                            Log.e("InstallException", "安装应用需要打开未知来源权限，请去设置中开启权限")
+                                            Toast.makeText(
+                                                mContext,
+                                                if (mContext == null) "安装应用需要打开未知来源权限，请去设置中开启权限" else mContext?.getString(
+                                                    R.string.permission_dialog_content
+                                                ),
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    })
+
+                            }
+                        }
+                        .show()
+                }
+            } else {
+                mContext?.startActivity(getInstallIntent(apkFile))
+            }
             if (notificationManager != null) {
                 notificationManager?.cancel(DOWNLOAD_NOTIFICATION_ID)
             }

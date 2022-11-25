@@ -21,4 +21,9 @@
 
     <string name="download_failure">下载失败，请到应用商城或官网下载</string>
 
+    <string name="permission_dialog_title">提示</string>
+    <string name="permission_dialog_content">安装应用需要打开未知来源权限，请去设置中开启权限</string>
+    <string name="permission_dialog_cancel">取消</string>
+    <string name="permission_dialog_confirm">去设置</string>
+
 </resources>
